@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">InchekyAndroid</string>
+    <string name="app_name">Incheky</string>
+    <string name="login_brand">Incheky</string>
+    <string name="login_subtitle">Todo lo que necesitas, en un solo lugar</string>
+    <string name="login_title">Inicia sesión</string>
+    <string name="login_email">Correo electrónico</string>
+    <string name="login_password">Contraseña</string>
+    <string name="login_button">Entrar</string>
+    <string name="login_loading">Validando...</string>
+    <string name="login_welcome">¡Bienvenido, %1$s!</string>
 </resources>
