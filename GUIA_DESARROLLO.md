@@ -13,42 +13,46 @@ Esta guía explica cómo está organizada la app Android, cómo se conecta a Spr
 ```text
 app/src/main/
 ├── AndroidManifest.xml
+├── res/navigation/nav_graph.xml
 ├── java/com/example/inchekyandroid/
 │   ├── InchekyApplication.java
-│   ├── MainActivity.java
+│   ├── MainActivity.java       (única Activity: NavHost)
 │   ├── data/
-│   │   ├── model/       Auth, profile y session models
+│   │   ├── model/       Auth, profile, session y ApiRequestMapper
+│   │   │   └── request/ DTOs de recursos y operaciones de negocio
 │   │   ├── remote/      AuthApi, BackendApi, RetrofitClient, SessionCookieJar
 │   │   └── repository/  AuthRepository, SessionRepository, ApiRepository
 │   └── ui/
-│       ├── login/       LoginViewModel
-│       ├── register/    RegisterActivity, RegisterViewModel
-│       └── home/        Dashboard, Profile y Resource Activities/ViewModels
+│       ├── login/       LoginFragment, LoginViewModel
+│       ├── register/    RegisterFragment, RegisterViewModel
+│       └── home/        Dashboard/Profile/Resource Fragments y ViewModels
 └── res/
-    ├── layout/          Login, registro, dashboard, perfil y recursos
+    ├── layout/          Host y vistas de login, registro, dashboard, perfil y recursos
     └── values/          colors.xml, strings.xml, themes.xml
 ```
 
 ### Responsabilidad de cada capa
 
-- **Activities y layouts:** login/registro conducen al dashboard; `ProfileActivity` edita la cuenta; `ResourceActivity` reutiliza una pantalla paginada para consultar y modificar recursos permitidos. Usan View Binding y delegan acceso a datos al ViewModel.
+- **Activity anfitriona:** `MainActivity` contiene el `NavHostFragment`; `nav_graph.xml` define login, registro, dashboard, perfil y recursos. Las pantallas son Fragments y usan View Binding.
+- **Fragments y layouts:** `LoginFragment` y `RegisterFragment` manejan autenticación; `DashboardFragment` filtra recursos por rol; `ProfileFragment` edita la cuenta; `ResourceFragment` ofrece listados paginados y formularios nativos.
 - **ViewModels (`ui/login`, `ui/register`, `ui/home`):** coordinan login/registro, restauración de sesión, perfil, logout y consulta/CRUD, exponiendo `LiveData` para la vista.
 - **Repositorios (`AuthRepository`, `SessionRepository`, `ApiRepository`):** encapsulan Retrofit, cuerpos JSON, paginación, carga multipart, tickets PDF y errores HTTP/de red.
 - **API remota (`AuthApi`, `BackendApi`):** declara endpoints de autenticación y operaciones comunes de recursos. `ApiResource` es la lista permitida de recursos y operaciones que se presenta por rol.
 - **Cliente HTTP (`RetrofitClient`):** configura Retrofit, Gson y OkHttp. Se inicializa una vez desde `InchekyApplication`.
 - **Cookie (`SessionCookieJar`):** guarda la cookie de sesión que entrega Spring Boot en preferencias privadas, la reenvía en solicitudes posteriores y la elimina con `clearSession()`.
-- **Modelos (`data/model`):** representan los JSON. Lombok genera constructores y accesores; Gson los convierte a/desde JSON.
-- **Recursos (`res`):** contienen vistas, paleta, textos y tema. View Binding genera las clases `ActivityMainBinding` y `ActivityRegisterBinding`.
+- **Modelos (`data/model`):** representan requests/responses. `ApiRequestMapper` convierte el formulario al DTO Lombok del endpoint correspondiente antes de enviar JSON con Gson.
+- **Recursos (`res`):** contienen vistas, paleta, textos, tema y grafo de navegación. View Binding genera bindings para las vistas XML reutilizadas por los Fragments.
+- **Iconografía y regreso:** los iconos vectoriales locales de `res/drawable` mantienen el estilo de las secciones y acciones de Angular sin agregar dependencias externas. Las pantallas de registro, perfil y recursos usan `popBackStack()` mediante un control visible de regreso; el login y el dashboard no muestran ese control.
 
 ## Flujo de sesión y features
 
 1. Login o registro validan los campos en su ViewModel y llaman a `AuthRepository`.
 2. OkHttp recibe y persiste `JSESSIONID`; todas las llamadas Retrofit reutilizan la cookie.
 3. Al iniciar y al entrar al dashboard, `SessionRepository` consulta `GET /api/auth/me`; una cookie guardada no se considera prueba de sesión válida.
-4. El dashboard filtra accesos por rol y abre recursos en `ResourceActivity`. `ResourceViewModel` usa `ApiRepository` y publica páginas, carga y errores.
-5. El cliente puede consultar su catálogo/compras y descargar tickets; caja consulta recursos autorizados, registra ventas y solicita el envío de tickets. Administración puede mantener los recursos con operaciones habilitadas.
+4. El dashboard filtra accesos por rol y navega a `ResourceFragment`. `ResourceViewModel` usa `ApiRepository` y publica páginas, carga y errores.
+5. El cliente puede consultar el catálogo, ver detalles, revisar sus compras y abrir tickets. Caja selecciona cliente/productos, agrega detalles y promociones vigentes, registra ventas y solicita el envío de tickets. Administración usa formularios tipados para las operaciones habilitadas, con selectores de entidades relacionadas.
 
-El explorador de recursos presenta resultados y formularios de alta/edición como JSON editable para mantener una integración reutilizable con los DTOs actuales. Los endpoints de negocio calculan totales y aplican reglas; Android envía los datos de solicitud, no sustituye esas reglas. La app no guarda contraseñas ni usa JWT.
+Los formularios nativos se definen por recurso en `ResourceFragment.fieldsFor()` y se transforman en DTOs en `ApiRequestMapper`. Las líneas de venta/abastecimiento se agregan con controles de producto, cantidad y precio/costo. Los totales y reglas de negocio se validan/calculan en Spring Boot; Android envía el request requerido y muestra errores del servidor. La app no guarda contraseñas ni usa JWT.
 
 ## Endpoints y permisos
 
@@ -109,6 +113,7 @@ El backend no habilita `POST /clientes` ni `PUT`/`DELETE /ventas/{id}`; no se mu
 - **Retrofit + Gson:** definición de endpoints, llamadas asíncronas y conversión JSON.
 - **OkHttp:** transporte HTTP y manejo persistente de cookies.
 - **AndroidX Lifecycle:** `ViewModel` y `LiveData`.
+- **Jetpack Navigation:** grafo y destinos Fragment dentro de una sola Activity.
 - **View Binding:** referencias tipadas a vistas; está activado en `app/build.gradle.kts`.
 - **Lombok:** reduce código repetitivo en modelos y se ejecuta en compilación, no en tiempo de ejecución.
 - **Material Components:** campos, botones y tarjetas de la interfaz nativa.
@@ -127,8 +132,8 @@ El backend no habilita `POST /clientes` ni `PUT`/`DELETE /ventas/{id}`; no se mu
 ## Extender la aplicación
 
 - Para agregar un recurso, confirma primero controlador, DTO y permiso en Spring Boot; agrega la definición de roles/capacidades a `ApiResource` y las operaciones necesarias a `BackendApi`/`ApiRepository`.
-- Para nueva lógica de una pantalla, colócala en el ViewModel; la Activity solo debe observar estado y actualizar vistas.
-- Para un formulario más específico, reemplaza el editor JSON genérico por campos View Binding con validaciones del ViewModel que coincidan con el DTO del backend.
-- Registra pantallas en `AndroidManifest.xml` y mantén la exportación desactivada para Activities internas.
+- Para nueva lógica de una pantalla, colócala en el ViewModel; el Fragment observa estado y actualiza vistas.
+- Para un recurso nuevo, agrega su ruta/capacidades a `ApiResource`, sus campos y relaciones a `ResourceFragment.fieldsFor()`, y un DTO correspondiente a `data/model/request` con su transformación en `ApiRequestMapper`.
+- Registra pantallas en `res/navigation/nav_graph.xml`; `MainActivity` es la única Activity interna/exportada para launcher.
 - Mantén textos en `res/values/strings.xml` y colores en `res/values/colors.xml`.
 - No agregues credenciales ni secretos a los archivos del proyecto.

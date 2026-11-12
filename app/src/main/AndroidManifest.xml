@@ -24,18 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.register.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.home.DashboardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.home.ProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.home.ResourceActivity"
-            android:exported="false" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.files"

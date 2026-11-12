@@ -27,7 +27,7 @@ public final class ApiResource {
         this.title = title;
         this.path = path;
         this.searchable = searchable;
-        this.canDetail = !"catalogo".equals(key) && !"compras".equals(key);
+        this.canDetail = !"compras".equals(key);
         this.canCreate = canCreate;
         this.canUpdate = canUpdate;
         this.canDelete = canDelete;

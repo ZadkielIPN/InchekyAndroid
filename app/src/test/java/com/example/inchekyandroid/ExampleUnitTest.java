@@ -3,6 +3,7 @@ package com.example.inchekyandroid;
 import com.example.inchekyandroid.data.model.LoginRequest;
 import com.example.inchekyandroid.data.model.RegisterRequest;
 import com.example.inchekyandroid.data.model.UsuarioProfileRequest;
+import com.example.inchekyandroid.data.model.ApiRequestMapper;
 import com.example.inchekyandroid.ui.home.ApiResource;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -97,6 +98,60 @@ public class ExampleUnitTest {
         assertTrue(sales.canCreate);
         assertFalse(sales.canUpdate);
         assertFalse(sales.canDelete);
+    }
+
+    @Test
+    public void saleRequestUsesBackendNamesAndTypedLineItems() {
+        JsonObject input = JsonParser.parseString("{"
+                + "\"fecha\":\"2026-11-12T10:30:00\","
+                + "\"cajeroId\":7,\"clienteId\":12,\"puntosUtilizados\":0,"
+                + "\"metodoPago\":\"EFECTIVO\",\"efectivoRecibido\":250,"
+                + "\"detalles\":[{\"productoId\":3,\"cantidad\":2,"
+                + "\"precioUnitario\":25.50,\"promocionId\":4}]}")
+                .getAsJsonObject();
+
+        JsonObject mapped = new ApiRequestMapper().toTypedJson("ventas", input);
+
+        assertEquals(7, mapped.get("cajeroId").getAsInt());
+        assertEquals(12, mapped.get("clienteId").getAsInt());
+        assertEquals("EFECTIVO", mapped.get("metodoPago").getAsString());
+        assertEquals(1, mapped.getAsJsonArray("detalles").size());
+        JsonObject line = mapped.getAsJsonArray("detalles").get(0).getAsJsonObject();
+        assertEquals(3, line.get("productoId").getAsInt());
+        assertEquals(4, line.get("promocionId").getAsInt());
+        assertFalse(mapped.has("id"));
+    }
+
+    @Test
+    public void productRequestPreservesBackendFieldsAndNullableExpiry() {
+        JsonObject input = JsonParser.parseString("{"
+                + "\"nombre\":\"Café\",\"descripcion\":\"Molido\","
+                + "\"precio\":99.5,\"stock\":4,\"peso\":0.25,"
+                + "\"valoracion\":4.5,\"activo\":true,\"codigoBarras\":\"123\","
+                + "\"unidadMedida\":\"PIEZA\",\"fechaCaducidad\":null,"
+                + "\"promocionIds\":[2]}")
+                .getAsJsonObject();
+
+        JsonObject mapped = new ApiRequestMapper().toTypedJson("productos", input);
+
+        assertEquals("Café", mapped.get("nombre").getAsString());
+        assertEquals("PIEZA", mapped.get("unidadMedida").getAsString());
+        assertEquals(1, mapped.getAsJsonArray("promocionIds").size());
+        assertFalse(mapped.has("fechaCaducidad"));
+    }
+
+    @Test
+    public void customerCatalogHasProductDetailsButNoPurchaseMutation() {
+        ApiResource catalog = find(ApiResource.forRole("CLIENTE"), "catalogo");
+        ApiResource purchases = find(ApiResource.forRole("CLIENTE"), "compras");
+
+        assertNotNull(catalog);
+        assertTrue(catalog.canDetail);
+        assertNotNull(purchases);
+        assertFalse(purchases.canDetail);
+        assertFalse(purchases.canCreate);
+        assertFalse(purchases.canUpdate);
+        assertFalse(purchases.canDelete);
     }
 
     private ApiResource find(List<ApiResource> resources, String key) {
