@@ -1,57 +1,30 @@
 package com.example.inchekyandroid.data.remote;
 
 import com.example.inchekyandroid.data.model.LoginRequest;
+import com.example.inchekyandroid.data.model.RegisterRequest;
 import com.example.inchekyandroid.data.model.UsuarioSession;
-import com.google.gson.JsonElement;
+import com.example.inchekyandroid.data.model.UsuarioProfileRequest;
+import com.example.inchekyandroid.data.model.UsuarioResponse;
 
-import java.util.Map;
-
-import retrofit2.http.DELETE;
-import retrofit2.http.GET;
-import retrofit2.http.PUT;
-import retrofit2.http.Path;
-import retrofit2.http.QueryMap;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface AuthApi {
     @POST("auth/login")
     Call<UsuarioSession> login(@Body LoginRequest request);
 
     @POST("auth/register")
-    Call<UsuarioSession> register(@Body JsonElement request);
+    Call<UsuarioSession> register(@Body RegisterRequest request);
 
     @GET("auth/me")
-    Call<JsonElement> profile();
+    Call<UsuarioResponse> currentUser();
 
     @PUT("auth/me")
-    Call<JsonElement> updateProfile(@Body JsonElement request);
+    Call<UsuarioResponse> updateProfile(@Body UsuarioProfileRequest request);
 
     @POST("auth/logout")
-    Call<JsonElement> logout(@Body JsonElement request);
-
-    @GET("{path}")
-    Call<JsonElement> get(@Path(value = "path", encoded = true) String path);
-
-    @GET("{path}")
-    Call<JsonElement> list(
-            @Path(value = "path", encoded = true) String path,
-            @QueryMap Map<String, String> query
-    );
-
-    @POST("{path}")
-    Call<JsonElement> create(
-            @Path(value = "path", encoded = true) String path,
-            @Body JsonElement request
-    );
-
-    @PUT("{path}")
-    Call<JsonElement> update(
-            @Path(value = "path", encoded = true) String path,
-            @Body JsonElement request
-    );
-
-    @DELETE("{path}")
-    Call<JsonElement> delete(@Path(value = "path", encoded = true) String path);
+    Call<Void> logout();
 }
