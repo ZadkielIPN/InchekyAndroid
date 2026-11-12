@@ -21,10 +21,12 @@ La respuesta exitosa contiene `id`, `nombre`, `apellido`, `email`, `numeroTelefo
 
 ## Arquitectura
 
-El inicio de sesión separa la vista, el estado de presentación, el acceso a datos y los modelos:
+El proyecto separa el punto de entrada, la presentación, el estado, el acceso a datos y los modelos:
 
-- `MainActivity`: configura `ActivityMainBinding`, recoge los campos y observa los estados del `LoginViewModel`. No realiza llamadas HTTP.
+- `MainActivity`: punto de entrada Android; activa Edge-to-Edge, crea el coordinador y delega el botón Atrás.
+- `ui/AppController`: coordina la navegación, las pantallas y sus interacciones. No realiza llamadas HTTP directamente.
 - `ui/login/LoginViewModel`: valida la entrada, coordina el inicio de sesión y expone `LiveData` para carga, error y usuario.
+- `ui/home/AppViewModel`: coordina las operaciones de la aplicación y publica los resultados para la presentación.
 - `data/repository/AuthRepository`: invoca el API de autenticación y convierte respuestas HTTP o fallos de conexión en mensajes para la vista.
 - `data/remote/AuthApi`: declara las rutas Retrofit y el cuerpo de cada solicitud.
 - `data/remote/RetrofitClient`: configura Retrofit, Gson y la URL base.
