@@ -49,6 +49,13 @@ public class ResourceViewModel extends ViewModel {
         repository.get(path, id, callback);
     }
 
+    public void listOptions(
+            String path,
+            ApiRepository.ResultCallback<JsonElement> callback
+    ) {
+        repository.list(path, 0, 200, null, callback);
+    }
+
     public void create(
             String path,
             JsonElement request,

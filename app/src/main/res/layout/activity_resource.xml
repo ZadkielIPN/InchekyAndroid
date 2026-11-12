@@ -6,16 +6,34 @@
     android:layout_height="match_parent"
     android:background="@color/auth_background">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnResourceBack"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/navigation_back"
+        android:text="@string/navigation_back"
+        android:textAllCaps="false"
+        android:textColor="@color/auth_primary"
+        app:icon="@drawable/ic_arrow_back"
+        app:iconTint="@color/auth_primary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tvResourceTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="20dp"
+        android:paddingStart="8dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
         android:textColor="@color/auth_ink"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnResourceBack"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -44,8 +62,11 @@
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/resource_search_action"
             android:text="@string/resource_search_action"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            app:icon="@drawable/ic_search"
+            app:iconTint="@color/auth_primary" />
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -59,6 +80,8 @@
         android:textAllCaps="false"
         app:backgroundTint="@color/auth_primary"
         app:cornerRadius="12dp"
+        app:icon="@drawable/ic_add"
+        app:iconTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchControls" />
@@ -73,6 +96,8 @@
         android:text="@string/resource_choose_image"
         android:textAllCaps="false"
         android:visibility="gone"
+        app:icon="@drawable/ic_image"
+        app:iconTint="@color/auth_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnResourceCreate" />
@@ -112,7 +137,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/resource_previous"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            app:icon="@drawable/ic_arrow_back"
+            app:iconTint="@color/auth_primary" />
 
         <TextView
             android:id="@+id/tvPageNumber"
@@ -128,6 +155,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/resource_next"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            app:icon="@drawable/ic_arrow_forward"
+            app:iconTint="@color/auth_primary" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
