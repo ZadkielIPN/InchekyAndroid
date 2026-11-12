@@ -37,6 +37,7 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String email, String password) {
         String normalizedEmail = email.trim();
+        user.setValue(null);
         if (normalizedEmail.isEmpty() || password.isEmpty()) {
             error.setValue("Ingresa tu correo y contraseña.");
             return;
@@ -45,11 +46,14 @@ public class LoginViewModel extends ViewModel {
             error.setValue("Ingresa un correo electrónico válido.");
             return;
         }
+        if (password.length() < 8 || password.length() > 20) {
+            error.setValue("La contraseña debe tener entre 8 y 20 caracteres.");
+            return;
+        }
 
         error.setValue("");
-        user.setValue(null);
         loading.setValue(true);
-        authRepository.login(normalizedEmail, password, new AuthRepository.LoginCallback() {
+        authRepository.login(normalizedEmail, password, new AuthRepository.AuthCallback() {
             @Override
             public void onSuccess(UsuarioSession loggedInUser) {
                 loading.postValue(false);

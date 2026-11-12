@@ -1,5 +1,6 @@
 package com.example.inchekyandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -11,7 +12,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.inchekyandroid.databinding.ActivityMainBinding;
+import com.example.inchekyandroid.data.model.UsuarioResponse;
+import com.example.inchekyandroid.data.remote.RetrofitClient;
+import com.example.inchekyandroid.data.repository.SessionRepository;
+import com.example.inchekyandroid.ui.home.DashboardActivity;
 import com.example.inchekyandroid.ui.login.LoginViewModel;
+import com.example.inchekyandroid.ui.register.RegisterActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,7 +38,33 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         binding.btnLogin.setOnClickListener(view -> submitLogin());
+        binding.btnRegister.setOnClickListener(view ->
+                startActivity(new Intent(this, RegisterActivity.class)));
         observeLoginState();
+        restoreAuthenticatedSession();
+    }
+
+    private void restoreAuthenticatedSession() {
+        if (!RetrofitClient.hasSessionCookie()) {
+            return;
+        }
+        binding.btnLogin.setEnabled(false);
+        new SessionRepository().currentUser(new SessionRepository.SessionCallback() {
+            @Override
+            public void onSuccess(UsuarioResponse user) {
+                openDashboard();
+            }
+
+            @Override
+            public void onError(String message) {
+                binding.btnLogin.setEnabled(true);
+            }
+        });
+    }
+
+    private void openDashboard() {
+        startActivity(new Intent(this, DashboardActivity.class));
+        finish();
     }
 
     private void submitLogin() {
@@ -48,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private void observeLoginState() {
         viewModel.getLoading().observe(this, loading -> {
             binding.btnLogin.setEnabled(!loading);
+            binding.btnRegister.setEnabled(!loading);
             binding.btnLogin.setText(loading ? R.string.login_loading : R.string.login_button);
         });
 
@@ -56,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             binding.tvFeedback.setText(error);
-            binding.tvFeedback.setTextColor(getColor(R.color.login_error));
+            binding.tvFeedback.setTextColor(getColor(R.color.auth_error));
             binding.tvFeedback.setVisibility(View.VISIBLE);
         });
 
@@ -64,9 +97,7 @@ public class MainActivity extends AppCompatActivity {
             if (user == null) {
                 return;
             }
-            binding.tvFeedback.setText(getString(R.string.login_welcome, user.getNombre()));
-            binding.tvFeedback.setTextColor(getColor(R.color.login_success));
-            binding.tvFeedback.setVisibility(View.VISIBLE);
+            openDashboard();
         });
     }
 }

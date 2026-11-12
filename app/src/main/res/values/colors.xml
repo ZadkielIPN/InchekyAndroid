@@ -2,10 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="login_background">#F4F7F6</color>
-    <color name="login_primary">#137C69</color>
-    <color name="login_secondary_text">#5F6F6B</color>
-    <color name="login_text">#173B34</color>
-    <color name="login_error">#B3261E</color>
-    <color name="login_success">#137C69</color>
+    <color name="auth_background">#EFF6FF</color>
+    <color name="auth_primary">#1D4ED8</color>
+    <color name="auth_ink">#172554</color>
+    <color name="auth_muted">#64748B</color>
+    <color name="auth_error">#B3261E</color>
+    <color name="auth_success">#15803D</color>
 </resources>
