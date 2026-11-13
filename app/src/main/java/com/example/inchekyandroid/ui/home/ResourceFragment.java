@@ -36,6 +36,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.inchekyandroid.R;
 import com.example.inchekyandroid.data.model.UsuarioResponse;
 import com.example.inchekyandroid.data.model.ApiRequestMapper;
+import com.example.inchekyandroid.data.model.FormDateValidator;
 import com.example.inchekyandroid.data.model.SaleFormData;
 import com.example.inchekyandroid.data.model.SaleEstimate;
 import com.example.inchekyandroid.data.model.SaleLineRequestMapper;
@@ -1207,7 +1208,11 @@ public class ResourceFragment extends Fragment {
                             validateDecimal(spec.key, number);
                             request.addProperty(spec.key, number);
                         } else {
-                            validateDate(spec.key, value);
+                            FormDateValidator.validateIfDateField(
+                                    spec.type == INPUT_DATE,
+                                    spec.type == INPUT_DATETIME,
+                                    spec.key,
+                                    value);
                             request.addProperty(spec.key, value);
                         }
                     } catch (NumberFormatException error) {
@@ -2002,23 +2007,6 @@ public class ResourceFragment extends Fragment {
         if ("porcentajeDescuento".equals(key)
                 && value.compareTo(BigDecimal.valueOf(100)) > 0) {
             throw new IllegalArgumentException("El descuento no puede superar 100%.");
-        }
-    }
-
-    private void validateDate(String key, String value) {
-        try {
-            if ("fecha".equals(key)) {
-                LocalDateTime.parse(value);
-            } else {
-                LocalDate date = LocalDate.parse(value);
-                if (("fechaFin".equals(key) || "fechaCaducidad".equals(key))
-                        && !date.isAfter(LocalDate.now())) {
-                    throw new IllegalArgumentException(
-                            "La fecha de fin/caducidad debe ser futura.");
-                }
-            }
-        } catch (java.time.DateTimeException error) {
-            throw new IllegalArgumentException("La fecha no tiene un formato válido.");
         }
     }
 

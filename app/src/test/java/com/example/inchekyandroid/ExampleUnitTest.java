@@ -2,6 +2,7 @@ package com.example.inchekyandroid;
 
 import com.example.inchekyandroid.data.model.LoginRequest;
 import com.example.inchekyandroid.data.model.RegisterRequest;
+import com.example.inchekyandroid.data.model.FormDateValidator;
 import com.example.inchekyandroid.data.model.SaleLineRequestMapper;
 import com.example.inchekyandroid.data.model.SaleFormData;
 import com.example.inchekyandroid.data.model.SaleEstimate;
@@ -334,6 +335,22 @@ public class ExampleUnitTest {
         JsonObject line = mapped.getAsJsonArray("detalles").get(0).getAsJsonObject();
         assertFalse(line.has(SaleEstimate.PREVIEW_PRODUCT_KEY));
         assertEquals(3, line.get("productoId").getAsInt());
+    }
+
+    @Test
+    public void customerNameAndEmailAreNotValidatedAsDates() {
+        FormDateValidator.validateIfDateField(false, false, "nombre", "Ana");
+        FormDateValidator.validateIfDateField(false, false, "email", "ana@example.com");
+    }
+
+    @Test
+    public void dateFieldsStillRejectMalformedValues() {
+        try {
+            FormDateValidator.validateIfDateField(true, false, "fechaInicio", "no-es-fecha");
+            fail("Expected malformed date to be rejected.");
+        } catch (IllegalArgumentException error) {
+            assertEquals("La fecha no tiene un formato válido.", error.getMessage());
+        }
     }
 
     @Test
