@@ -38,14 +38,13 @@
                 app:icon="@drawable/ic_arrow_back"
                 app:iconTint="@color/auth_primary" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="@string/auth_brand"
-                android:textColor="@color/auth_primary"
-                android:textSize="28sp"
-                android:textStyle="bold" />
+            <ImageView
+                android:layout_width="132dp"
+                android:layout_height="132dp"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="@string/app_logo_description"
+                android:scaleType="fitCenter"
+                android:src="@drawable/incheky_logo" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -84,7 +83,7 @@
                         android:layout_marginBottom="12dp"
                         android:hint="@string/register_name"
                         app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/auth_primary">
+                        app:boxStrokeColor="@color/input_stroke">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etName"
@@ -102,7 +101,7 @@
                         android:layout_marginBottom="12dp"
                         android:hint="@string/register_surname"
                         app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/auth_primary">
+                        app:boxStrokeColor="@color/input_stroke">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etSurname"
@@ -120,8 +119,9 @@
                         android:layout_marginBottom="12dp"
                         android:hint="@string/login_email"
                         app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/auth_primary"
-                        app:startIconDrawable="@android:drawable/ic_dialog_email">
+                        app:boxStrokeColor="@color/input_stroke"
+                        app:startIconDrawable="@drawable/ic_email"
+                        app:startIconTint="@color/auth_primary">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etEmail"
@@ -139,7 +139,7 @@
                         android:layout_marginBottom="12dp"
                         android:hint="@string/login_password"
                         app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/auth_primary"
+                        app:boxStrokeColor="@color/input_stroke"
                         app:endIconMode="password_toggle">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -159,7 +159,7 @@
                         android:layout_marginBottom="8dp"
                         android:hint="@string/register_confirm_password"
                         app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/auth_primary"
+                        app:boxStrokeColor="@color/input_stroke"
                         app:endIconMode="password_toggle">
 
                         <com.google.android.material.textfield.TextInputEditText

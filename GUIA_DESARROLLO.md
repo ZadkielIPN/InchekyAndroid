@@ -43,16 +43,19 @@ app/src/main/
 - **Modelos (`data/model`):** representan requests/responses. `ApiRequestMapper` convierte el formulario al DTO Lombok del endpoint correspondiente antes de enviar JSON con Gson.
 - **Recursos (`res`):** contienen vistas, paleta, textos, tema y grafo de navegación. View Binding genera bindings para las vistas XML reutilizadas por los Fragments.
 - **Iconografía y regreso:** los iconos vectoriales locales de `res/drawable` mantienen el estilo de las secciones y acciones de Angular sin agregar dependencias externas. Las pantallas de registro, perfil y recursos usan `popBackStack()` mediante un control visible de regreso; el login y el dashboard no muestran ese control.
+- **Identidad y estilo:** el logo de Handel Incheky se usa en los iconos adaptables del launcher, en login/registro y en la cabecera del dashboard. El tema comparte superficies claras, tarjetas delimitadas y campos de formulario outline con borde azul de mayor contraste al enfocarse.
 
 ## Flujo de sesión y features
 
 1. Login o registro validan los campos en su ViewModel y llaman a `AuthRepository`.
 2. OkHttp recibe y persiste `JSESSIONID`; todas las llamadas Retrofit reutilizan la cookie.
 3. Al iniciar y al entrar al dashboard, `SessionRepository` consulta `GET /api/auth/me`; una cookie guardada no se considera prueba de sesión válida.
-4. El dashboard filtra accesos por rol y navega a `ResourceFragment`. `ResourceViewModel` usa `ApiRepository` y publica páginas, carga y errores.
-5. El cliente puede consultar el catálogo, ver detalles, revisar sus compras y abrir tickets. Caja selecciona cliente/productos, agrega detalles y promociones vigentes, registra ventas y solicita el envío de tickets. Administración usa formularios tipados para las operaciones habilitadas, con selectores de entidades relacionadas.
+4. El dashboard valida el rol; al cliente lo lleva directamente al catálogo y conserva el dashboard debajo para acceder a perfil/compras/cerrar sesión. Caja y administración permanecen en el dashboard con accesos permitidos. `ResourceViewModel` usa `ApiRepository` y publica páginas, carga y errores.
+5. El cliente puede consultar el catálogo, ver detalles, revisar sus compras y abrir tickets. Caja selecciona cliente, productos y cantidades para registrar ventas; el precio unitario se toma del producto y no se edita en cada renglón. El formulario muestra saldo y máximo aplicable de puntos, un desglose estimado de promociones/lealtad/puntos, total, puntos estimados y cambio o faltante en efectivo. “Efectivo recibido” aparece solo con ese método de pago y se omite del request para los demás métodos. El backend vuelve a calcular precios, descuentos, puntos y total, y rechaza efectivo insuficiente; sus valores son la autoridad final. Administración usa formularios tipados para las operaciones habilitadas, con selectores de entidades relacionadas.
 
-Los formularios nativos se definen por recurso en `ResourceFragment.fieldsFor()` y se transforman en DTOs en `ApiRequestMapper`. Las líneas de venta/abastecimiento se agregan con controles de producto, cantidad y precio/costo. Los totales y reglas de negocio se validan/calculan en Spring Boot; Android envía el request requerido y muestra errores del servidor. La app no guarda contraseñas ni usa JWT.
+Los formularios nativos se definen por recurso en `ResourceFragment.fieldsFor()` y se transforman en DTOs en `ApiRequestMapper`. Las líneas de venta/abastecimiento se agregan con controles de producto, cantidad y precio/costo. Las líneas repetidas de una venta se consolidan para respetar la regla del backend de no repetir productos. El resumen de venta es informativo; los totales y reglas de negocio se validan/calculan en Spring Boot. Android envía el request requerido y muestra errores del servidor. La app no guarda contraseñas ni usa JWT.
+
+El catálogo y listado de productos muestra las imágenes del campo `imagen` que devuelve la API. Los nombres de archivo se resuelven desde el origen de Retrofit como `/uploads/productos/{imagen}`; las URLs absolutas se conservan. `Glide` descarga y cachea las imágenes con placeholder/error cuando no hay imagen o no puede cargarse. Las acciones principales y secundarias usan tonos azules de la paleta común.
 
 ## Endpoints y permisos
 
@@ -92,12 +95,12 @@ Spring Boot exige contraseña entre 8 y 20 caracteres. Las respuestas de autenti
 | Rol | Acceso en Android |
 |---|---|
 | `CLIENTE` | Catálogo de productos, compras propias y ticket |
-| `CAJERO` | Catálogo, clientes, productos/proveedores/abastecimientos/promociones y sus detalles en modo lectura; consulta y registro de ventas; ticket y envío por correo |
-| `ADMINISTRADOR` | Recursos administrativos, inventario, promociones, ventas y sus detalles según los métodos del backend |
+| `CAJERO` | Catálogo, clientes, productos/proveedores/abastecimientos/promociones en modo lectura; consulta y registro de ventas con sus artículos; ticket y envío por correo |
+| `ADMINISTRADOR` | Recursos administrativos, inventario, promociones, ventas y abastecimientos con sus artículos dentro de cada operación |
 
-La API disponible incluye `/clientes`, `/productos` y `/productos/catalogo`, `/ventas` y `/ventas/mis-compras`, `/proveedores`, `/abastecimientos`, `/promociones`, `/cajeros`, `/administradores`, `/usuarios`, `/detalle-ventas`, `/detalle-abastecimientos` y `/emails/ticket/{id}`. El catálogo paginado se interpreta desde `content`, `number` y `totalPages`.
+La API disponible incluye `/clientes`, `/productos` y `/productos/catalogo`, `/ventas` y `/ventas/mis-compras`, `/proveedores`, `/abastecimientos`, `/promociones`, `/cajeros`, `/administradores`, `/usuarios`, `/detalle-ventas`, `/detalle-abastecimientos` y `/emails/ticket/{id}`. Los detalles de ventas y abastecimientos se gestionan como artículos dentro de su operación principal y no aparecen como accesos independientes en el dashboard. Los listados usan páginas de 20 elementos, con índices base cero en Spring y controles anterior/siguiente en Android. La búsqueda vuelve a la primera página; los controles se deshabilitan durante la carga y respetan los límites informados por `totalPages`. Si un registro eliminado deja la página actual fuera de rango, la lista vuelve a cargar la última página disponible. La respuesta se interpreta desde `content`, `number` y `totalPages`.
 
-El backend no habilita `POST /clientes` ni `PUT`/`DELETE /ventas/{id}`; no se muestran esas acciones en Android. Los permisos del servidor siguen siendo autoritativos: el filtrado de la app solo evita ofrecer acciones que el rol no puede realizar. Para cambiar el contrato o un permiso, actualiza primero Spring Boot.
+El backend no habilita `POST /clientes` ni `PUT`/`DELETE /ventas/{id}`; no se muestran esas acciones en Android. La opción “Ver detalle” presenta la información en un modal con etiquetas legibles y, cuando la respuesta contiene `detalles`, los muestra como artículos con producto, cantidad y precio/costo unitario. Los permisos del servidor siguen siendo autoritativos: el filtrado de la app solo evita ofrecer acciones que el rol no puede realizar. Para cambiar el contrato o un permiso, actualiza primero Spring Boot.
 
 ## Configuración de red y sesión
 
@@ -107,6 +110,14 @@ El backend no habilita `POST /clientes` ni `PUT`/`DELETE /ventas/{id}`; no se mu
 - `RetrofitClient.clearSession()` borra la cookie local y se ejecuta al cerrar sesión o al recibir una sesión no autorizada.
 - La carga de imagen para crear productos usa el selector del sistema y la parte multipart `file`; la parte `producto` lleva JSON.
 - Los tickets se descargan al caché privado y se abren con un visor PDF instalado. Caja/administración pueden solicitar el envío por correo.
+
+## Comparación funcional con InchekyAngular
+
+La comparación se realizó con la rama `master` de `ZadkielIPN/InchekyAngular`. Los formularios administrativos de Android y Angular comparten los campos principales de clientes, cajeros, administradores, proveedores, productos, promociones y abastecimientos. Android aplica validación de contraseña de 8 a 20 caracteres, omite la contraseña vacía al editar cuentas y permite dejar sin fecha final una promoción; la fecha final, cuando se captura, debe ser futura y no anterior a la fecha de inicio. Las promociones requieren al menos un producto, igual que Angular.
+
+El producto Android incluye `valoracion` con valor inicial cero y conserva el selector API `promocionIds`; Angular maneja las relaciones de promociones desde el formulario de promociones. La selección de imagen Android permite elegir archivo y conservar una URL de imagen. Los formularios de perfil y registro y el historial de compras con descarga de ticket también están disponibles en Android.
+
+La venta Android mantiene el mismo precio derivado del producto y los cálculos estimados de promoción activa, nivel de lealtad, uso máximo de puntos, total, puntos ganados y efectivo/cambio. `OTRO` permanece como método de pago adicional porque Spring Boot lo define en su enum, aunque Angular no lo muestra. La creación de clientes sigue deshabilitada en Android porque el backend no habilita `POST /clientes`; los permisos del servidor prevalecen sobre cualquier ruta o control disponible en Angular.
 
 ## Dependencias
 

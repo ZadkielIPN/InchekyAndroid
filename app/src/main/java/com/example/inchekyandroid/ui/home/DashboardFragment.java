@@ -24,6 +24,7 @@ import java.util.List;
 public class DashboardFragment extends Fragment {
     private ActivityDashboardBinding binding;
     private DashboardViewModel viewModel;
+    private boolean clientCatalogOpened;
 
     @Nullable
     @Override
@@ -53,6 +54,11 @@ public class DashboardFragment extends Fragment {
             binding.tvDashboardSubtitle.setText(getString(
                     R.string.home_welcome, user.getNombre(), user.getRol()));
             renderResources(ApiResource.forRole(user.getRol()));
+            String initialResource = ApiResource.initialResourceForRole(user.getRol());
+            if (initialResource != null && !clientCatalogOpened) {
+                clientCatalogOpened = true;
+                openCustomerCatalog(initialResource);
+            }
         });
         viewModel.getError().observe(getViewLifecycleOwner(), message -> {
             if (message == null || message.isEmpty()) {
@@ -70,6 +76,13 @@ public class DashboardFragment extends Fragment {
                 binding.btnDashboardLogout.setEnabled(!loading));
     }
 
+    private void openCustomerCatalog(String resourceKey) {
+        Bundle args = new Bundle();
+        args.putString("resource", resourceKey);
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_dashboard_to_resource, args);
+    }
+
     private void renderResources(List<ApiResource> resources) {
         binding.dashboardResources.removeAllViews();
         if (resources.isEmpty()) {
@@ -84,6 +97,8 @@ public class DashboardFragment extends Fragment {
             card.setCardBackgroundColor(requireContext().getColor(R.color.white));
             card.setRadius(getResources().getDimension(R.dimen.auth_card_radius));
             card.setCardElevation(getResources().getDimension(R.dimen.auth_card_elevation));
+            card.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.card_stroke_width));
+            card.setStrokeColor(requireContext().getColor(R.color.card_outline));
             android.widget.LinearLayout wrapper = new android.widget.LinearLayout(requireContext());
             wrapper.setGravity(android.view.Gravity.CENTER_VERTICAL);
             wrapper.setOrientation(android.widget.LinearLayout.HORIZONTAL);
@@ -131,14 +146,12 @@ public class DashboardFragment extends Fragment {
                 return R.drawable.ic_box_seam;
             case "compras":
             case "ventas":
-            case "detalle-ventas":
                 return R.drawable.ic_receipt;
             case "clientes":
                 return R.drawable.ic_people;
             case "proveedores":
                 return R.drawable.ic_truck;
             case "abastecimientos":
-            case "detalle-abastecimientos":
                 return R.drawable.ic_boxes;
             case "promociones":
                 return R.drawable.ic_percent;

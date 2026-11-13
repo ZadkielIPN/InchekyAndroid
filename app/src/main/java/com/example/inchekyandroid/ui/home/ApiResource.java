@@ -48,10 +48,6 @@ public final class ApiResource {
                     resource("proveedores", "Proveedores", "proveedores", true, false, false, false),
                     resource("abastecimientos", "Abastecimientos", "abastecimientos", false, false, false, false),
                     resource("promociones", "Promociones", "promociones", true, false, false, false),
-                    resource("detalle-ventas", "Detalles de ventas", "detalle-ventas",
-                            false, false, false, false),
-                    resource("detalle-abastecimientos", "Detalles de abastecimientos",
-                            "detalle-abastecimientos", false, false, false, false),
                     resource("ventas", "Ventas", "ventas", false, true, false, false)
             );
         }
@@ -65,13 +61,14 @@ public final class ApiResource {
                     resource("cajeros", "Cajeros", "cajeros", true, true, true, true),
                     resource("administradores", "Administradores", "administradores", true, true, true, true),
                     resource("usuarios", "Usuarios", "usuarios", true, false, false, true),
-                    resource("detalle-ventas", "Detalles de ventas", "detalle-ventas", false, true, true, true),
-                    resource("detalle-abastecimientos", "Detalles de abastecimientos",
-                            "detalle-abastecimientos", false, true, true, true),
                     resource("ventas", "Ventas", "ventas", false, true, false, false)
             );
         }
         return Collections.emptyList();
+    }
+
+    public static String initialResourceForRole(String role) {
+        return "CLIENTE".equals(role) ? "catalogo" : null;
     }
 
     private static ApiResource resource(

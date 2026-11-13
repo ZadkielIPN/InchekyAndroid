@@ -6,19 +6,30 @@
     android:layout_height="match_parent"
     android:background="@color/auth_background">
 
+    <ImageView
+        android:id="@+id/ivDashboardLogo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:contentDescription="@string/app_logo_description"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo_launcher_foreground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tvDashboardTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingTop="24dp"
-        android:paddingEnd="20dp"
+        android:paddingStart="8dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="16dp"
         android:text="@string/home_title"
         android:textColor="@color/auth_ink"
         android:textSize="26sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/btnDashboardProfile"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivDashboardLogo"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -32,7 +43,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDashboardTitle" />
+        app:layout_constraintTop_toBottomOf="@id/btnDashboardProfile" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDashboardProfile"
@@ -45,7 +56,7 @@
         app:icon="@drawable/ic_person_circle"
         app:iconTint="@color/auth_primary"
         app:layout_constraintEnd_toStartOf="@id/btnDashboardLogout"
-        app:layout_constraintTop_toTopOf="@id/tvDashboardTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvDashboardTitle" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDashboardLogout"
@@ -59,7 +70,7 @@
         app:icon="@drawable/ic_logout"
         app:iconTint="@color/auth_primary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvDashboardTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvDashboardTitle" />
 
     <ScrollView
         android:layout_width="0dp"

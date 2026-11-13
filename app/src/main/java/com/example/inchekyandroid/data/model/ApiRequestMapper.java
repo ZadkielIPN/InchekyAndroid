@@ -13,6 +13,7 @@ import com.example.inchekyandroid.data.model.request.UsuarioRequest;
 import com.example.inchekyandroid.data.model.request.VentaRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 
 public final class ApiRequestMapper {
     private final Gson gson;
@@ -65,5 +66,17 @@ public final class ApiRequestMapper {
                 return request;
         }
         return gson.toJsonTree(typed).getAsJsonObject();
+    }
+
+    public static void omitBlankPasswordForUpdate(JsonObject request, boolean isUpdate) {
+        if (request == null || !isUpdate) {
+            return;
+        }
+        JsonElement password = request.get("contrasena");
+        if (password != null && password.isJsonPrimitive()
+                && password.getAsJsonPrimitive().isString()
+                && password.getAsString().trim().isEmpty()) {
+            request.remove("contrasena");
+        }
     }
 }

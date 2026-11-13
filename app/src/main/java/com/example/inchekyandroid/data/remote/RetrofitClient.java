@@ -48,6 +48,10 @@ public final class RetrofitClient {
         return backendApi;
     }
 
+    public static String getApiBaseUrl() {
+        return BASE_URL;
+    }
+
     public static synchronized boolean hasSessionCookie() {
         return cookieJar != null && cookieJar.hasSessionCookie();
     }

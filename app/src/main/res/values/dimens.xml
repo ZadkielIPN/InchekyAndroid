@@ -2,5 +2,14 @@
     <dimen name="auth_card_radius">16dp</dimen>
     <dimen name="auth_card_elevation">2dp</dimen>
     <dimen name="auth_card_spacing">12dp</dimen>
+    <dimen name="form_field_spacing">14dp</dimen>
+    <dimen name="form_section_spacing">20dp</dimen>
+    <dimen name="form_dialog_padding">20dp</dimen>
     <dimen name="dashboard_icon_size">40dp</dimen>
+    <dimen name="card_stroke_width">1dp</dimen>
+    <dimen name="input_corner_radius">12dp</dimen>
+    <dimen name="input_focused_stroke_width">2dp</dimen>
+    <dimen name="input_min_height">56dp</dimen>
+    <dimen name="product_image_height">176dp</dimen>
+    <dimen name="action_button_spacing">4dp</dimen>
 </resources>

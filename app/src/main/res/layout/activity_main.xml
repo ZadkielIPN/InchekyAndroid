@@ -24,37 +24,27 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/auth_primary"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/auth_brand_initial"
-                    android:textColor="@color/white"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-            </com.google.android.material.card.MaterialCardView>
+            <ImageView
+                android:layout_width="156dp"
+                android:layout_height="156dp"
+                android:layout_marginBottom="12dp"
+                android:contentDescription="@string/app_logo_description"
+                android:scaleType="fitCenter"
+                android:src="@drawable/incheky_logo" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/auth_brand"
+                android:text="@string/login_title"
                 android:textColor="@color/auth_ink"
-                android:textSize="28sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="28dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="24dp"
                 android:text="@string/auth_subtitle"
                 android:textColor="@color/auth_muted"
                 android:textSize="14sp" />
@@ -88,8 +78,9 @@
                         android:layout_marginBottom="12dp"
                         android:hint="@string/login_email"
                         app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/auth_primary"
-                        app:startIconDrawable="@android:drawable/ic_dialog_email">
+                        app:boxStrokeColor="@color/input_stroke"
+                        app:startIconDrawable="@drawable/ic_email"
+                        app:startIconTint="@color/auth_primary">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etEmail"
@@ -107,7 +98,7 @@
                         android:layout_marginBottom="8dp"
                         android:hint="@string/login_password"
                         app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/auth_primary"
+                        app:boxStrokeColor="@color/input_stroke"
                         app:endIconMode="password_toggle">
 
                         <com.google.android.material.textfield.TextInputEditText

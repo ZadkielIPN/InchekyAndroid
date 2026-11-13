@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp)
+    implementation(libs.glide)
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
     testImplementation(libs.junit)

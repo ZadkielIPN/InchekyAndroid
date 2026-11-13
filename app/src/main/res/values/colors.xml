@@ -8,4 +8,8 @@
     <color name="auth_muted">#64748B</color>
     <color name="auth_error">#B3261E</color>
     <color name="auth_success">#15803D</color>
+    <color name="auth_secondary">#2563EB</color>
+    <color name="card_outline">#D7E0EF</color>
+    <color name="input_outline">#8294B3</color>
+    <color name="launcher_background">#FCFBF8</color>
 </resources>
