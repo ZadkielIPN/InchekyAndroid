@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -15,28 +16,48 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner =
+            "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         debug {
+            buildConfigField(
+                "String",
+                "API_BASE_URL",
+                "\"http://10.0.2.2:8080/api/\""
+            )
+
             manifestPlaceholders["usesCleartextTraffic"] = "true"
         }
+
         release {
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
+
+            buildConfigField(
+                "String",
+                "API_BASE_URL",
+                "\"https://incheky-backend-ckg6haa0bwe3bkdv.mexicocentral-01.azurewebsites.net/api/\""
+            )
+
             manifestPlaceholders["usesCleartextTraffic"] = "false"
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -52,8 +73,11 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp)
     implementation(libs.glide)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
