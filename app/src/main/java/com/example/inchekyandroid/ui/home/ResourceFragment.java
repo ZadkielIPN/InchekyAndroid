@@ -1,5 +1,7 @@
 package com.example.inchekyandroid.ui.home;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.res.ColorStateList;
@@ -13,8 +15,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Patterns;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Gravity;
 import android.view.Menu;
@@ -406,8 +407,8 @@ public class ResourceFragment extends Fragment {
         TextView title = new TextView(requireContext());
         title.setText(recordTitle(object, id));
         title.setTextColor(requireContext().getColor(R.color.ink));
-        title.setTextSize(getResources().getDimension(R.dimen.card_title_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.card_title_text_size));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         title.setMaxLines(2);
         LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
@@ -418,8 +419,8 @@ public class ResourceFragment extends Fragment {
             TextView idChip = new TextView(requireContext());
             idChip.setText(getString(R.string.resource_id_chip, id));
             idChip.setTextColor(requireContext().getColor(R.color.chip_text));
-            idChip.setTextSize(getResources().getDimension(R.dimen.caption_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            idChip.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.caption_text_size));
             idChip.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
             idChip.setBackgroundResource(R.drawable.chip_background);
             int horizontal = getResources().getDimensionPixelSize(R.dimen.space_2);
@@ -459,8 +460,8 @@ public class ResourceFragment extends Fragment {
             boolean price = "precio".equals(field) || "total".equals(field);
             detail.setTextColor(requireContext().getColor(
                     price ? R.color.accent : R.color.muted));
-            detail.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            detail.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.body_text_size));
             if (price) {
                 detail.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
             }
@@ -487,8 +488,8 @@ public class ResourceFragment extends Fragment {
         status.setText(active ? R.string.status_active : R.string.status_inactive);
         status.setTextColor(requireContext().getColor(
                 active ? R.color.success : R.color.muted_on_line));
-        status.setTextSize(getResources().getDimension(R.dimen.caption_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        status.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.caption_text_size));
         status.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         status.setPadding(
                 getResources().getDimensionPixelSize(R.dimen.space_2),
@@ -704,8 +705,7 @@ public class ResourceFragment extends Fragment {
         header.setText(getString(R.string.resource_detail_record,
                 displayDetailValue("id", id)));
         header.setTextColor(requireContext().getColor(R.color.auth_primary));
-        header.setTextSize(getResources().getDimension(R.dimen.detail_header_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        header.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         header.setTypeface(null, android.graphics.Typeface.BOLD);
         header.setPadding(0, 0, 0,
                 getResources().getDimensionPixelSize(R.dimen.form_field_spacing));
@@ -722,13 +722,13 @@ public class ResourceFragment extends Fragment {
         TextView label = new TextView(requireContext());
         label.setText(detailLabel(key));
         label.setTextColor(requireContext().getColor(R.color.auth_muted));
-        label.setTextSize(getResources().getDimension(R.dimen.caption_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        label.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.caption_text_size));
         TextView content = new TextView(requireContext());
         content.setText(text);
         content.setTextColor(requireContext().getColor(R.color.auth_ink));
-        content.setTextSize(getResources().getDimension(R.dimen.card_title_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        content.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.card_title_text_size));
         content.setTypeface(null, android.graphics.Typeface.BOLD);
         row.addView(label);
         row.addView(content);
@@ -744,8 +744,8 @@ public class ResourceFragment extends Fragment {
                 ? R.string.resource_detail_sale_items
                 : R.string.resource_detail_supply_items);
         heading.setTextColor(requireContext().getColor(R.color.auth_ink));
-        heading.setTextSize(getResources().getDimension(R.dimen.card_title_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        heading.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.card_title_text_size));
         heading.setTypeface(null, android.graphics.Typeface.BOLD);
         LinearLayout.LayoutParams headingParams = detailLayoutParams();
         headingParams.topMargin = getResources()
@@ -776,8 +776,8 @@ public class ResourceFragment extends Fragment {
             TextView product = new TextView(requireContext());
             product.setText(detailProductName(item));
             product.setTextColor(requireContext().getColor(R.color.auth_ink));
-            product.setTextSize(getResources().getDimension(R.dimen.card_title_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            product.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.card_title_text_size));
             product.setTypeface(null, android.graphics.Typeface.BOLD);
             body.addView(product);
 
@@ -904,7 +904,7 @@ public class ResourceFragment extends Fragment {
         if ("precio".equals(key) || "total".equals(key) || "precioUnitario".equals(key)
                 || "costoUnitario".equals(key) || "efectivoRecibido".equals(key)) {
             try {
-                return NumberFormat.getCurrencyInstance(new Locale("es", "MX"))
+                return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-MX"))
                         .format(new BigDecimal(text));
             } catch (NumberFormatException ignored) {
                 return text;
@@ -962,9 +962,8 @@ public class ResourceFragment extends Fragment {
         if (hasLineItems(resource.key)) {
             TextView detailTitle = new TextView(requireContext());
             detailTitle.setText(R.string.resource_line_items);
-            detailTitle.setTextSize(getResources().getDimension(
-                    R.dimen.card_title_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            detailTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.card_title_text_size));
             detailTitle.setTextColor(requireContext().getColor(R.color.auth_ink));
             addFormView(form, detailTitle, true);
             detailsContainer = new LinearLayout(requireContext());
@@ -986,15 +985,14 @@ public class ResourceFragment extends Fragment {
         if ("ventas".equals(resource.key)) {
             TextView summaryTitle = new TextView(requireContext());
             summaryTitle.setText(R.string.sale_estimate_title);
-            summaryTitle.setTextSize(getResources().getDimension(
-                    R.dimen.card_title_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            summaryTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.card_title_text_size));
             summaryTitle.setTextColor(requireContext().getColor(R.color.auth_ink));
             addFormView(form, summaryTitle, true);
             saleSummary[0] = new TextView(requireContext());
             saleSummary[0].setTextColor(requireContext().getColor(R.color.auth_ink));
-            saleSummary[0].setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            saleSummary[0].setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.body_text_size));
             saleSummary[0].setPadding(spacing, spacing, spacing, spacing);
             MaterialCardView summaryCard = createDetailCard();
             summaryCard.addView(saleSummary[0]);
@@ -1002,8 +1000,8 @@ public class ResourceFragment extends Fragment {
             TextView summaryHint = new TextView(requireContext());
             summaryHint.setText(R.string.sale_estimate_disclaimer);
             summaryHint.setTextColor(requireContext().getColor(R.color.auth_muted));
-            summaryHint.setTextSize(getResources().getDimension(R.dimen.caption_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            summaryHint.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.caption_text_size));
             addFormView(form, summaryHint);
             configureSaleForm(inputs, detailRows, saleSummary[0]);
         }
@@ -1115,8 +1113,8 @@ public class ResourceFragment extends Fragment {
             TextView label = new TextView(requireContext());
             label.setText(spec.label);
             label.setTextColor(requireContext().getColor(R.color.ink));
-            label.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            label.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.body_text_size));
             addFormView(parent, label);
             Spinner spinner = new Spinner(requireContext());
             addFormView(parent, spinner);
@@ -1128,8 +1126,8 @@ public class ResourceFragment extends Fragment {
             TextView label = new TextView(requireContext());
             label.setText(spec.label);
             label.setTextColor(requireContext().getColor(R.color.ink));
-            label.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            label.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.body_text_size));
             addFormView(parent, label);
             MaterialButton selector = createDropdownButton();
             selector.setText(getString(R.string.entity_select, spec.label));
@@ -1191,8 +1189,8 @@ public class ResourceFragment extends Fragment {
                 TextView balance = new TextView(requireContext());
                 balance.setText(R.string.sale_points_select_customer);
                 balance.setTextColor(requireContext().getColor(R.color.auth_muted));
-                balance.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                        / getResources().getDisplayMetrics().scaledDensity);
+                balance.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimension(R.dimen.body_text_size));
                 input.pointsBalanceView = balance;
                 addFormView(parent, balance);
             }
@@ -1204,8 +1202,8 @@ public class ResourceFragment extends Fragment {
         MaterialButton button = new MaterialButton(requireContext());
         button.setAllCaps(false);
         button.setTextColor(requireContext().getColor(R.color.accent));
-        button.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        button.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.body_text_size));
         button.setBackgroundTintList(ColorStateList.valueOf(
                 requireContext().getColor(R.color.surface)));
         button.setStrokeColor(ColorStateList.valueOf(requireContext().getColor(R.color.accent)));
@@ -1242,8 +1240,8 @@ public class ResourceFragment extends Fragment {
         TextView title = new TextView(requireContext());
         title.setText(field.spec.label);
         title.setTextColor(requireContext().getColor(R.color.ink));
-        title.setTextSize(getResources().getDimension(R.dimen.section_title_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.section_title_text_size));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         addFormView(sheet, title);
 
@@ -1282,8 +1280,8 @@ public class ResourceFragment extends Fragment {
                 TextView empty = new TextView(requireContext());
                 empty.setText(R.string.resource_empty);
                 empty.setTextColor(requireContext().getColor(R.color.muted_on_soft));
-                empty.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                        / getResources().getDisplayMetrics().scaledDensity);
+                empty.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimension(R.dimen.body_text_size));
                 empty.setGravity(Gravity.CENTER);
                 empty.setPadding(padding, padding, padding, padding);
                 optionsContainer.addView(empty);
@@ -1335,8 +1333,8 @@ public class ResourceFragment extends Fragment {
         TextView name = new TextView(requireContext());
         name.setText(option.label);
         name.setTextColor(requireContext().getColor(R.color.ink));
-        name.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        name.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.body_text_size));
         name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         labels.addView(name);
         String subtitleText = optionSubtitle(option);
@@ -1345,8 +1343,8 @@ public class ResourceFragment extends Fragment {
             subtitle.setText(subtitleText);
             subtitle.setTextColor(requireContext().getColor(
                     selected ? R.color.muted_on_soft : R.color.muted));
-            subtitle.setTextSize(getResources().getDimension(R.dimen.caption_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            subtitle.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.caption_text_size));
             labels.addView(subtitle);
         }
         row.addView(labels, new LinearLayout.LayoutParams(
@@ -1356,8 +1354,8 @@ public class ResourceFragment extends Fragment {
             TextView check = new TextView(requireContext());
             check.setText("✓");
             check.setTextColor(requireContext().getColor(R.color.accent));
-            check.setTextSize(getResources().getDimension(R.dimen.brand_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            check.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.brand_text_size));
             check.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
             check.setContentDescription(getString(R.string.entity_selected));
             row.addView(check);
@@ -1647,7 +1645,7 @@ public class ResourceFragment extends Fragment {
     }
 
     private String money(BigDecimal amount) {
-        return NumberFormat.getCurrencyInstance(new Locale("es", "MX")).format(amount);
+        return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-MX")).format(amount);
     }
 
     private int parseInteger(String value) {
@@ -2750,8 +2748,8 @@ public class ResourceFragment extends Fragment {
         TextView label = new TextView(requireContext());
         label.setText(message);
         label.setTextColor(requireContext().getColor(R.color.muted_on_soft));
-        label.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        label.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.body_text_size));
         label.setGravity(Gravity.CENTER);
         label.setPadding(0, getResources().getDimensionPixelSize(R.dimen.space_2),
                 0, 0);
@@ -2780,8 +2778,8 @@ public class ResourceFragment extends Fragment {
                 ? getString(R.string.resource_load_error)
                 : message);
         error.setTextColor(requireContext().getColor(R.color.danger));
-        error.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        error.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.body_text_size));
         content.addView(error);
         MaterialButton retry = new MaterialButton(requireContext());
         retry.setText(R.string.resource_retry);

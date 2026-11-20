@@ -1,6 +1,7 @@
 package com.example.inchekyandroid;
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -18,7 +20,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.inchekyandroid.data.model.UsuarioResponse;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private UsuarioResponse currentUser;
     private boolean userRequestInFlight;
     private TextView userPill;
+    private OnBackPressedCallback drawerBackCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,24 @@ public class MainActivity extends AppCompatActivity {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host);
         navController = navHostFragment.getNavController();
+        drawerBackCallback = new OnBackPressedCallback(false) {
+            @Override
+            public void handleOnBackPressed() {
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, drawerBackCallback);
+        binding.drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                drawerBackCallback.setEnabled(true);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                drawerBackCallback.setEnabled(false);
+            }
+        });
         configureToolbar();
         binding.drawerNavigation.setNavigationItemSelectedListener(this::onMenuItemSelected);
         binding.btnDrawerLogout.setOnClickListener(ignored -> logout());
@@ -94,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
         userPill.setEllipsize(android.text.TextUtils.TruncateAt.END);
         userPill.setMaxWidth(getResources().getDimensionPixelSize(R.dimen.topbar_user_max_width));
         userPill.setTextColor(getColor(R.color.ink));
-        userPill.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        userPill.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.body_text_size));
         userPill.setTypeface(userPill.getTypeface(), android.graphics.Typeface.BOLD);
         userPill.setPadding(
                 getResources().getDimensionPixelSize(R.dimen.space_3),
@@ -305,15 +325,6 @@ public class MainActivity extends AppCompatActivity {
             currentUser = null;
             navController.navigate(R.id.action_global_login);
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (binding != null && binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding.drawerLayout.closeDrawer(GravityCompat.START);
-            return;
-        }
-        super.onBackPressed();
     }
 
     @Override

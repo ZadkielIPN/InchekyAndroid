@@ -87,8 +87,8 @@ public class ApiRepository {
             ResultCallback<JsonElement> callback
     ) {
         RequestBody productBody = RequestBody.create(
-                MediaType.parse("application/json; charset=utf-8"),
-                request.toString()
+                request.toString(),
+                MediaType.parse("application/json; charset=utf-8")
         );
         MultipartBody.Part filePart = null;
         if (image != null) {
@@ -99,10 +99,7 @@ public class ApiRepository {
                 callback.onError("Selecciona un archivo de imagen válido.");
                 return;
             }
-            RequestBody imageBody = RequestBody.create(
-                    MediaType.parse(mimeType),
-                    image
-            );
+            RequestBody imageBody = RequestBody.create(image, MediaType.parse(mimeType));
             filePart = MultipartBody.Part.createFormData("file", image.getName(), imageBody);
         }
         execute(api.createProduct(productBody, filePart), callback);

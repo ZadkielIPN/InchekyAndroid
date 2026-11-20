@@ -1,7 +1,8 @@
 package com.example.inchekyandroid.ui.home;
 
-import android.os.Bundle;
 import android.graphics.Typeface;
+import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,8 +99,8 @@ public class DashboardFragment extends Fragment {
             TextView empty = new TextView(requireContext());
             empty.setText(R.string.home_no_features);
             empty.setTextColor(requireContext().getColor(R.color.muted_on_soft));
-            empty.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                    / getResources().getDisplayMetrics().scaledDensity);
+            empty.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.body_text_size));
             GridLayout.LayoutParams params = new GridLayout.LayoutParams(
                     GridLayout.spec(GridLayout.UNDEFINED),
                     GridLayout.spec(GridLayout.UNDEFINED, 2, 1f));
@@ -171,8 +172,8 @@ public class DashboardFragment extends Fragment {
             title.setText(resource.title);
         }
         title.setTextColor(requireContext().getColor(R.color.ink));
-        title.setTextSize(getResources().getDimension(R.dimen.card_title_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.card_title_text_size));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         title.setMaxLines(2);
         labels.addView(title);
@@ -183,8 +184,8 @@ public class DashboardFragment extends Fragment {
                 : resourceDescription(resource.key));
         description.setTextColor(requireContext().getColor(
                 featured ? R.color.muted_on_line : R.color.muted));
-        description.setTextSize(getResources().getDimension(R.dimen.body_text_size)
-                / getResources().getDisplayMetrics().scaledDensity);
+        description.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.body_text_size));
         description.setMaxLines(3);
         LinearLayout.LayoutParams descriptionParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,

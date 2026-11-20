@@ -1778,7 +1778,7 @@ public class SaleFragment extends Fragment {
     }
 
     private String money(BigDecimal value) {
-        return NumberFormat.getCurrencyInstance(new Locale("es", "MX")).format(value);
+        return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-MX")).format(value);
     }
 
     private String textOf(EditText input) {
