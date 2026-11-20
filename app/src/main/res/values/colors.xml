@@ -1,15 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="auth_background">#EFF6FF</color>
-    <color name="auth_primary">#1D4ED8</color>
-    <color name="auth_ink">#172554</color>
-    <color name="auth_muted">#64748B</color>
-    <color name="auth_error">#B3261E</color>
-    <color name="auth_success">#15803D</color>
-    <color name="auth_secondary">#2563EB</color>
-    <color name="card_outline">#D7E0EF</color>
-    <color name="input_outline">#8294B3</color>
+    <color name="black">#FF000000</color>
+    <color name="accent">#1D4ED8</color>
+    <color name="accent_dark">#1E40AF</color>
+    <color name="ink">#172554</color>
+    <color name="muted">#64748B</color>
+    <color name="muted_on_soft">#5F7187</color>
+    <color name="line">#DBEAFE</color>
+    <color name="soft">#EFF6FF</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="sidebar_start">#172554</color>
+    <color name="sidebar_end">#1E3A8A</color>
+    <color name="sidebar_text">#DBEAFE</color>
+    <color name="sidebar_active">#1FFFFFFF</color>
+    <color name="chip_bg">#DBEAFE</color>
+    <color name="chip_text">#1D4ED8</color>
+    <color name="input_border">#CBD5E1</color>
+    <color name="input_halo">#331D4ED8</color>
+    <color name="danger">#B91C1C</color>
+    <color name="danger_border">#FCA5A5</color>
+    <color name="danger_pressed">#FEF2F2</color>
+    <color name="error_notice_bg">#FEF2F2</color>
+    <color name="success">#15803D</color>
+    <color name="success_bg">#DCFCE7</color>
+    <color name="success_notice_bg">#ECFDF5</color>
+    <color name="success_notice_text">#047857</color>
+    <color name="featured_border">#86EFAC</color>
+    <color name="featured_start">#F0FDF4</color>
+    <color name="auth_gradient_start">#DBEAFE</color>
+    <color name="auth_gradient_center">#EFF6FF</color>
+    <color name="auth_gradient_end">#FFFFFF</color>
     <color name="launcher_background">#FCFBF8</color>
+
+    <!-- Compatibility aliases; new UI should use the semantic tokens above. -->
+    <color name="auth_background">@color/soft</color>
+    <color name="auth_primary">@color/accent</color>
+    <color name="auth_ink">@color/ink</color>
+    <color name="auth_muted">@color/muted</color>
+    <color name="auth_error">@color/danger</color>
+    <color name="auth_success">@color/success</color>
+    <color name="auth_secondary">@color/accent</color>
+    <color name="card_outline">@color/line</color>
+    <color name="input_outline">@color/input_border</color>
 </resources>

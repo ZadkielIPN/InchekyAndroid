@@ -1,24 +1,70 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.InchekyAndroid" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/auth_primary</item>
-        <item name="colorSecondary">@color/auth_secondary</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="colorOnSurface">@color/auth_ink</item>
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="android:colorBackground">@color/soft</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/ink</item>
+        <item name="colorOutline">@color/line</item>
+        <item name="colorError">@color/danger</item>
+        <item name="android:colorAccent">@color/accent</item>
         <item name="textInputStyle">@style/Widget.Incheky.TextInputLayout</item>
+        <item name="materialButtonStyle">@style/Widget.Incheky.Button.Primary</item>
     </style>
 
     <style name="Widget.Incheky.TextInputLayout"
         parent="Widget.Material3.TextInputLayout.OutlinedBox">
-        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxBackgroundColor">@color/surface</item>
         <item name="boxStrokeColor">@color/input_stroke</item>
         <item name="boxStrokeWidth">1dp</item>
         <item name="boxStrokeWidthFocused">2dp</item>
-        <item name="boxCornerRadiusTopStart">12dp</item>
-        <item name="boxCornerRadiusTopEnd">12dp</item>
-        <item name="boxCornerRadiusBottomStart">12dp</item>
-        <item name="boxCornerRadiusBottomEnd">12dp</item>
-        <item name="hintTextColor">@color/auth_muted</item>
+        <item name="boxCornerRadiusTopStart">@dimen/button_corner_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/button_corner_radius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/button_corner_radius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/button_corner_radius</item>
+        <item name="hintTextColor">@color/muted</item>
+    </style>
+
+    <style name="Widget.Incheky.Button.Primary" parent="Widget.Material3.Button">
+        <item name="android:minHeight">@dimen/touch_target_min</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="backgroundTint">@color/accent</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
+    </style>
+
+    <style name="Widget.Incheky.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:minHeight">@dimen/touch_target_min</item>
+        <item name="android:textColor">@color/accent</item>
+        <item name="strokeColor">@color/accent</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
+    </style>
+
+    <style name="Widget.Incheky.Button.Danger" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:minHeight">@dimen/touch_target_min</item>
+        <item name="android:textColor">@color/danger</item>
+        <item name="strokeColor">@color/danger_border</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
+    </style>
+
+    <style name="InchekyCard">
+        <item name="cardBackgroundColor">@color/surface</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
+        <item name="cardElevation">@dimen/card_elevation</item>
+        <item name="strokeColor">@color/line</item>
+        <item name="strokeWidth">@dimen/card_stroke_width</item>
+    </style>
+
+    <!-- Use muted on surface; use mutedOnSoft over soft, line, and chip backgrounds. -->
+    <style name="TextAppearance.Incheky.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.Incheky.MutedOnSoft" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/muted_on_soft</item>
     </style>
 
     <style name="Theme.InchekyAndroid" parent="Base.Theme.InchekyAndroid" />

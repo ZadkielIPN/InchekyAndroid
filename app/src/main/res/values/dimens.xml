@@ -1,15 +1,32 @@
 <resources>
-    <dimen name="auth_card_radius">16dp</dimen>
-    <dimen name="auth_card_elevation">2dp</dimen>
-    <dimen name="auth_card_spacing">12dp</dimen>
-    <dimen name="form_field_spacing">14dp</dimen>
-    <dimen name="form_section_spacing">20dp</dimen>
-    <dimen name="form_dialog_padding">20dp</dimen>
-    <dimen name="dashboard_icon_size">40dp</dimen>
+    <dimen name="space_1">4dp</dimen>
+    <dimen name="space_2">8dp</dimen>
+    <dimen name="space_3">12dp</dimen>
+    <dimen name="space_4">16dp</dimen>
+    <dimen name="space_5">24dp</dimen>
+    <dimen name="space_6">32dp</dimen>
+    <dimen name="screen_margin">16dp</dimen>
+    <dimen name="touch_target_min">48dp</dimen>
+    <dimen name="button_corner_radius">8dp</dimen>
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="chip_corner_radius">999dp</dimen>
+    <dimen name="card_elevation">1dp</dimen>
     <dimen name="card_stroke_width">1dp</dimen>
-    <dimen name="input_corner_radius">12dp</dimen>
+    <dimen name="input_corner_radius">8dp</dimen>
     <dimen name="input_focused_stroke_width">2dp</dimen>
-    <dimen name="input_min_height">56dp</dimen>
+    <dimen name="input_min_height">48dp</dimen>
+    <dimen name="topbar_min_height">56dp</dimen>
+    <dimen name="topbar_max_height">72dp</dimen>
+    <dimen name="dashboard_icon_size">28dp</dimen>
     <dimen name="product_image_height">176dp</dimen>
     <dimen name="action_button_spacing">4dp</dimen>
+    <dimen name="drawer_width">304dp</dimen>
+
+    <!-- Compatibility aliases for existing screens. -->
+    <dimen name="auth_card_radius">@dimen/card_corner_radius</dimen>
+    <dimen name="auth_card_elevation">@dimen/card_elevation</dimen>
+    <dimen name="auth_card_spacing">@dimen/space_3</dimen>
+    <dimen name="form_field_spacing">@dimen/space_3</dimen>
+    <dimen name="form_section_spacing">20dp</dimen>
+    <dimen name="form_dialog_padding">20dp</dimen>
 </resources>
