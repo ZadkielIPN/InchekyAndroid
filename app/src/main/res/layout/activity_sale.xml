@@ -133,7 +133,7 @@
             android:layout_height="@dimen/empty_icon_size"
             android:contentDescription="@string/sale_no_products"
             android:src="@drawable/ic_box_seam"
-            android:tint="@color/muted" />
+            app:tint="@color/muted" />
 
         <TextView
             android:id="@+id/tvSaleEmpty"

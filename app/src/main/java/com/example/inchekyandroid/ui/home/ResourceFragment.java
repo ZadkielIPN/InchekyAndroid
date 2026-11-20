@@ -514,7 +514,7 @@ public class ResourceFragment extends Fragment {
             }
         }
         String email = primitiveValue(object.get("email"));
-        return email.isEmpty() ? getString(R.string.resource_detail_record, id) : email;
+        return email.isEmpty() ? getString(R.string.resource_detail_record_number, id) : email;
     }
 
     private String primitiveValue(JsonElement value) {

@@ -1698,7 +1698,7 @@ public class SaleFragment extends Fragment {
             return name;
         }
         String email = stringValue(entity.get("email"));
-        return email.isEmpty() ? getString(R.string.resource_detail_record, idOf(entity)) : email;
+        return email.isEmpty() ? getString(R.string.resource_detail_record_number, idOf(entity)) : email;
     }
 
     private String entitySubtitle(JsonObject entity) {

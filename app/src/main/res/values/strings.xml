@@ -159,6 +159,7 @@
     <string name="resource_detail_unit_cost">Costo unitario</string>
     <string name="resource_detail_empty">No hay información adicional.</string>
     <string name="resource_detail_record">Registro #%1$s</string>
+    <string name="resource_detail_record_number">Registro #%1$d</string>
     <string name="resource_edit">Editar</string>
     <string name="resource_delete">Eliminar</string>
     <string name="resource_delete_confirm">¿Eliminar el registro seleccionado?</string>
