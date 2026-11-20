@@ -22,6 +22,8 @@
     <dimen name="dashboard_icon_size">28dp</dimen>
     <dimen name="drawer_logo_size">40dp</dimen>
     <dimen name="brand_text_size">20sp</dimen>
+    <dimen name="screen_title_text_size">24sp</dimen>
+    <dimen name="section_title_text_size">22sp</dimen>
     <dimen name="body_text_size">14sp</dimen>
     <dimen name="caption_text_size">12sp</dimen>
     <dimen name="card_title_text_size">16sp</dimen>
@@ -30,6 +32,9 @@
     <dimen name="product_image_height">176dp</dimen>
     <dimen name="action_button_spacing">4dp</dimen>
     <dimen name="drawer_width">304dp</dimen>
+    <dimen name="auth_login_logo_size">128dp</dimen>
+    <dimen name="auth_register_logo_size">112dp</dimen>
+    <dimen name="auth_progress_size">20dp</dimen>
 
     <!-- Compatibility aliases for existing screens. -->
     <dimen name="auth_card_radius">@dimen/card_corner_radius</dimen>

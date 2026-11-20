@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Incheky</string>
     <string name="auth_brand">Incheky</string>
+    <string name="auth_brand_full">HANDEL INCHEKY</string>
     <string name="auth_brand_initial">I</string>
     <string name="auth_subtitle">Gestión de inventario y ventas</string>
     <string name="app_logo_description">Logo de Handel Incheky</string>
@@ -9,6 +10,15 @@
     <string name="login_password">Contraseña</string>
     <string name="login_button">Iniciar sesión</string>
     <string name="login_loading">Validando...</string>
+    <string name="login_email_required">Ingresa tu correo electrónico.</string>
+    <string name="login_password_required">Ingresa tu contraseña.</string>
+    <string name="auth_invalid_email">Ingresa un correo electrónico válido.</string>
+    <string name="auth_password_length">La contraseña debe tener entre 8 y 20 caracteres.</string>
+    <string name="register_name_required">Ingresa tu nombre.</string>
+    <string name="register_surname_required">Ingresa tu apellido.</string>
+    <string name="register_password_required">Ingresa una contraseña.</string>
+    <string name="register_confirmation_required">Confirma tu contraseña.</string>
+    <string name="register_password_mismatch">Las contraseñas no coinciden.</string>
     <string name="login_register_prompt">¿Eres cliente nuevo?</string>
     <string name="register_link">Crear cuenta</string>
     <string name="login_welcome">¡Bienvenido, %1$s!</string>

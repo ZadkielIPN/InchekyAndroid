@@ -5,12 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/auth_background"
+    android:background="@drawable/auth_background_gradient"
     tools:context=".ui.register.RegisterFragment">
 
     <ScrollView
+        android:id="@+id/authScroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,26 +24,26 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="@dimen/space_5">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRegisterBack"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_height="@dimen/touch_target_min"
+                android:layout_marginBottom="@dimen/space_3"
                 android:contentDescription="@string/navigation_back"
                 android:gravity="start|center_vertical"
                 android:text="@string/navigation_back"
                 android:textAllCaps="false"
-                android:textColor="@color/auth_primary"
+                android:textColor="@color/accent"
                 app:icon="@drawable/ic_arrow_back"
-                app:iconTint="@color/auth_primary" />
+                app:iconTint="@color/accent" />
 
             <ImageView
-                android:layout_width="132dp"
-                android:layout_height="132dp"
-                android:layout_marginBottom="8dp"
+                android:layout_width="@dimen/auth_register_logo_size"
+                android:layout_height="@dimen/auth_register_logo_size"
+                android:layout_marginBottom="@dimen/space_2"
                 android:contentDescription="@string/app_logo_description"
                 android:scaleType="fitCenter"
                 android:src="@drawable/incheky_logo" />
@@ -49,18 +51,29 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="@dimen/space_2"
+                android:text="@string/auth_brand_full"
+                android:textColor="@color/ink"
+                android:textSize="@dimen/brand_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_5"
                 android:text="@string/auth_subtitle"
-                android:textColor="@color/auth_muted"
-                android:textSize="14sp" />
+                android:textColor="@color/muted_on_line"
+                android:textSize="@dimen/body_text_size" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="2dp"
-                app:contentPadding="24dp">
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation"
+                app:contentPadding="@dimen/space_5"
+                app:strokeColor="@color/line"
+                app:strokeWidth="@dimen/card_stroke_width">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -70,25 +83,25 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="18dp"
+                        android:layout_marginBottom="@dimen/space_4"
                         android:text="@string/register_title"
-                        android:textColor="@color/auth_ink"
-                        android:textSize="22sp"
+                        android:textColor="@color/ink"
+                        android:textSize="@dimen/section_title_text_size"
                         android:textStyle="bold" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilName"
+                        style="@style/Widget.Incheky.TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:hint="@string/register_name"
-                        app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/input_stroke">
+                        android:layout_marginBottom="@dimen/space_3"
+                        android:hint="@string/register_name">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
                             android:inputType="textPersonName|textCapWords"
                             android:maxLength="255"
                             android:maxLines="1" />
@@ -96,17 +109,17 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilSurname"
+                        style="@style/Widget.Incheky.TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:hint="@string/register_surname"
-                        app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/input_stroke">
+                        android:layout_marginBottom="@dimen/space_3"
+                        android:hint="@string/register_surname">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etSurname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
                             android:inputType="textPersonName|textCapWords"
                             android:maxLength="255"
                             android:maxLines="1" />
@@ -114,32 +127,31 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilEmail"
+                        style="@style/Widget.Incheky.TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="@dimen/space_3"
                         android:hint="@string/login_email"
-                        app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/input_stroke"
                         app:startIconDrawable="@drawable/ic_email"
-                        app:startIconTint="@color/auth_primary">
+                        app:startIconTint="@color/accent">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:autofillHints="emailAddress"
+                            android:imeOptions="actionNext"
                             android:inputType="textEmailAddress"
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilPassword"
+                        style="@style/Widget.Incheky.TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="@dimen/space_3"
                         android:hint="@string/login_password"
-                        app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/input_stroke"
                         app:endIconMode="password_toggle">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -147,6 +159,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:autofillHints="newPassword"
+                            android:imeOptions="actionNext"
                             android:inputType="textPassword"
                             android:maxLength="20"
                             android:maxLines="1" />
@@ -154,12 +167,11 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilConfirmPassword"
+                        style="@style/Widget.Incheky.TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="@dimen/space_2"
                         android:hint="@string/register_confirm_password"
-                        app:boxBackgroundMode="outline"
-                        app:boxStrokeColor="@color/input_stroke"
                         app:endIconMode="password_toggle">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -167,6 +179,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:autofillHints="newPassword"
+                            android:imeOptions="actionDone"
                             android:inputType="textPassword"
                             android:maxLength="20"
                             android:maxLines="1" />
@@ -176,30 +189,48 @@
                         android:id="@+id/tvFeedback"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="@dimen/space_3"
+                        android:background="@drawable/error_notice_background"
+                        android:padding="@dimen/space_3"
+                        android:textColor="@color/danger"
+                        android:textSize="@dimen/body_text_size"
                         android:visibility="gone"
                         tools:text="Mensaje del registro"
                         tools:visibility="visible" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnRegister"
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="@string/register_button"
-                        android:textAllCaps="false"
-                        android:textSize="16sp"
-                        app:backgroundTint="@color/auth_primary"
-                        app:cornerRadius="14dp" />
+                        android:layout_height="@dimen/touch_target_min">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnRegister"
+                            style="@style/Widget.Incheky.Button.Primary"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/register_button"
+                            android:textSize="@dimen/body_text_size" />
+
+                        <ProgressBar
+                            android:id="@+id/registerProgress"
+                            style="?android:attr/progressBarStyleSmall"
+                            android:layout_width="@dimen/auth_progress_size"
+                            android:layout_height="@dimen/auth_progress_size"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="@dimen/space_3"
+                            android:importantForAccessibility="no"
+                            android:indeterminateTint="@color/white"
+                            android:visibility="gone" />
+                    </FrameLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnLogin"
                         style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_height="@dimen/touch_target_min"
+                        android:layout_marginTop="@dimen/space_3"
                         android:text="@string/register_login_link"
                         android:textAllCaps="false"
-                        android:textColor="@color/auth_primary" />
+                        android:textColor="@color/accent" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
