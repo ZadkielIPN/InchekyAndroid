@@ -4,121 +4,68 @@
     android:id="@+id/resourceRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/auth_background">
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnResourceBack"
-        style="@style/Widget.Material3.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:contentDescription="@string/navigation_back"
-        android:text="@string/navigation_back"
-        android:textAllCaps="false"
-        android:textColor="@color/auth_primary"
-        app:icon="@drawable/ic_arrow_back"
-        app:iconTint="@color/auth_primary"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvResourceTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="8dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:textColor="@color/auth_ink"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnResourceBack"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:background="@color/soft">
 
     <LinearLayout
         android:id="@+id/searchControls"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/space_2"
+        android:layout_marginEnd="@dimen/screen_margin"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvResourceTitle">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilResourceQuery"
-            android:layout_width="0dp"
+            style="@style/Widget.Incheky.TextInputLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:hint="@string/resource_search"
-            android:layout_marginEnd="8dp"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="@color/input_stroke"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/muted"
             app:startIconDrawable="@drawable/ic_search"
-            app:startIconTint="@color/auth_primary">
+            app:startIconTint="@color/muted">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etResourceQuery"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnResourceSearch"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/resource_search_action"
-            android:text="@string/resource_search_action"
-            android:textAllCaps="false"
-            app:icon="@drawable/ic_search"
-            app:iconTint="@color/auth_primary" />
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnResourceCreate"
+        android:id="@+id/btnResourceImage"
+        style="@style/Widget.Incheky.Button.Secondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/resource_create"
-        android:textAllCaps="false"
-        app:backgroundTint="@color/auth_primary"
-        app:cornerRadius="12dp"
-        app:icon="@drawable/ic_add"
-        app:iconTint="@color/white"
+        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/space_2"
+        android:layout_marginEnd="@dimen/screen_margin"
+        android:text="@string/resource_choose_image"
+        android:visibility="gone"
+        app:icon="@drawable/ic_image"
+        app:iconTint="@color/accent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchControls" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnResourceImage"
-        style="@style/Widget.Material3.Button.TextButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/resource_choose_image"
-        android:textAllCaps="false"
-        android:visibility="gone"
-        app:icon="@drawable/ic_image"
-        app:iconTint="@color/auth_primary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnResourceCreate" />
 
     <ScrollView
         android:id="@+id/resourceScroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:fillViewport="true"
-        android:padding="16dp"
+        android:paddingStart="@dimen/screen_margin"
+        android:paddingTop="@dimen/space_3"
+        android:paddingEnd="@dimen/screen_margin"
+        android:paddingBottom="@dimen/list_fab_clearance"
         app:layout_constraintBottom_toTopOf="@id/resourcePager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -131,13 +78,43 @@
             android:orientation="vertical" />
     </ScrollView>
 
+    <ProgressBar
+        android:id="@+id/resourceLoading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="@dimen/space_6"
+        android:layout_height="@dimen/space_6"
+        android:indeterminateTint="@color/accent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/resourceScroll"
+        app:layout_constraintEnd_toEndOf="@id/resourceScroll"
+        app:layout_constraintStart_toStartOf="@id/resourceScroll"
+        app:layout_constraintTop_toTopOf="@id/resourceScroll" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnResourceCreate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/screen_margin"
+        android:layout_marginBottom="@dimen/space_2"
+        android:contentDescription="@string/resource_create"
+        android:visibility="gone"
+        app:backgroundTint="@color/accent"
+        app:layout_constraintBottom_toTopOf="@id/resourcePager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@color/white" />
+
     <LinearLayout
         android:id="@+id/resourcePager"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:background="@color/soft"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="8dp"
+        android:paddingStart="@dimen/space_2"
+        android:paddingTop="@dimen/space_1"
+        android:paddingEnd="@dimen/space_2"
+        android:paddingBottom="@dimen/space_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -145,29 +122,37 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPreviousPage"
             style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/touch_target_min"
+            android:layout_weight="1"
+            android:gravity="end|center_vertical"
             android:text="@string/resource_previous"
             android:textAllCaps="false"
+            android:textColor="@color/pager_text_tint"
             app:icon="@drawable/ic_arrow_back"
-            app:iconTint="@color/auth_primary" />
+            app:iconTint="@color/pager_text_tint" />
 
         <TextView
             android:id="@+id/tvPageNumber"
+            style="@style/TextAppearance.Incheky.MutedOnSoft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/auth_ink" />
+            android:paddingStart="@dimen/space_2"
+            android:paddingEnd="@dimen/space_2"
+            android:text="@string/resource_page_default" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNextPage"
             style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/touch_target_min"
+            android:layout_weight="1"
+            android:gravity="start|center_vertical"
             android:text="@string/resource_next"
             android:textAllCaps="false"
+            android:textColor="@color/pager_text_tint"
             app:icon="@drawable/ic_arrow_forward"
-            app:iconTint="@color/auth_primary" />
+            app:iconGravity="textEnd"
+            app:iconTint="@color/pager_text_tint" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

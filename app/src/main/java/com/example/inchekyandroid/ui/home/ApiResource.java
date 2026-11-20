@@ -53,7 +53,7 @@ public final class ApiResource {
         }
         if ("ADMINISTRADOR".equals(role)) {
             return Arrays.asList(
-                    resource("clientes", "Clientes", "clientes", true, false, true, true),
+                    resource("clientes", "Clientes", "clientes", true, true, true, true),
                     resource("productos", "Productos", "productos", true, true, true, true),
                     resource("proveedores", "Proveedores", "proveedores", true, true, true, true),
                     resource("abastecimientos", "Abastecimientos", "abastecimientos", false, true, true, true),

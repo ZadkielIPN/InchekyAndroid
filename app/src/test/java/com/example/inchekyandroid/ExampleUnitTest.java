@@ -170,13 +170,13 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void adminResourcesDoNotExposeDisabledMutations() {
+    public void adminResourcesExposeCustomerMutations() {
         List<ApiResource> resources = ApiResource.forRole("ADMINISTRADOR");
 
         ApiResource customers = find(resources, "clientes");
         ApiResource sales = find(resources, "ventas");
         assertNotNull(customers);
-        assertFalse(customers.canCreate);
+        assertTrue(customers.canCreate);
         assertTrue(customers.canUpdate);
         assertTrue(customers.canDelete);
         assertNotNull(sales);
@@ -186,6 +186,25 @@ public class ExampleUnitTest {
         assertNotNull(find(resources, "abastecimientos"));
         assertNull(find(resources, "detalle-ventas"));
         assertNull(find(resources, "detalle-abastecimientos"));
+    }
+
+    @Test
+    public void cashierResourcesAreReadOnlyExceptTicketCreation() {
+        List<ApiResource> resources = ApiResource.forRole("CAJERO");
+
+        for (String key : new String[]{"productos", "proveedores", "clientes", "promociones"}) {
+            ApiResource resource = find(resources, key);
+            assertNotNull(resource);
+            assertFalse(resource.canCreate);
+            assertFalse(resource.canUpdate);
+            assertFalse(resource.canDelete);
+        }
+
+        ApiResource sales = find(resources, "ventas");
+        assertNotNull(sales);
+        assertTrue(sales.canCreate);
+        assertFalse(sales.canUpdate);
+        assertFalse(sales.canDelete);
     }
 
     @Test

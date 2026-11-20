@@ -57,7 +57,7 @@
         <item name="strokeWidth">@dimen/card_stroke_width</item>
     </style>
 
-    <!-- Use muted on surface; use mutedOnSoft over soft, line, and chip backgrounds. -->
+    <!-- Muted usage: surface=#64748B, soft=#5F7187, line/chips=#56697F for AA contrast. -->
     <style name="TextAppearance.Incheky.Body" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:textColor">@color/ink</item>
         <item name="android:textSize">14sp</item>

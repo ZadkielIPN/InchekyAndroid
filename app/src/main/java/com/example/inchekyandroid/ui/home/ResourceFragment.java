@@ -2,9 +2,13 @@ package com.example.inchekyandroid.ui.home;
 
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.res.ColorStateList;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -12,6 +16,9 @@ import android.util.Patterns;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.view.LayoutInflater;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -22,7 +29,9 @@ import android.widget.Spinner;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.inputmethod.EditorInfo;
 
+import androidx.appcompat.widget.PopupMenu;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -97,6 +106,8 @@ public class ResourceFragment extends Fragment {
     private String selectedImageMimeType;
     private boolean productUploadInProgress;
     private ActivityResultLauncher<String> imagePicker;
+    private final Handler searchHandler = new Handler(Looper.getMainLooper());
+    private Runnable searchTask;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,16 +133,39 @@ public class ResourceFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this).get(ResourceViewModel.class);
         observeRecords();
-        binding.btnResourceSearch.setEnabled(false);
         binding.btnResourceCreate.setEnabled(false);
         binding.btnResourceImage.setEnabled(false);
         binding.btnPreviousPage.setEnabled(false);
         binding.btnNextPage.setEnabled(false);
-        binding.btnResourceBack.setOnClickListener(ignored ->
-                NavHostFragment.findNavController(this).popBackStack());
-        binding.btnResourceSearch.setOnClickListener(ignored -> {
+        searchTask = () -> {
             page = 0;
             loadRecords();
+        };
+        binding.etResourceQuery.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        binding.etResourceQuery.setOnEditorActionListener((textView, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH
+                    || (event != null && event.getKeyCode() == android.view.KeyEvent.KEYCODE_ENTER
+                    && event.getAction() == android.view.KeyEvent.ACTION_DOWN)) {
+                searchHandler.removeCallbacks(searchTask);
+                searchTask.run();
+                return true;
+            }
+            return false;
+        });
+        binding.etResourceQuery.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence value, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence value, int start, int before, int count) {
+                searchHandler.removeCallbacks(searchTask);
+                searchHandler.postDelayed(searchTask, 350);
+            }
+
+            @Override
+            public void afterTextChanged(Editable value) {
+            }
         });
         binding.btnResourceCreate.setOnClickListener(ignored -> showEditor(null, 0));
         binding.btnResourceImage.setOnClickListener(ignored -> imagePicker.launch("image/*"));
@@ -187,8 +221,6 @@ public class ResourceFragment extends Fragment {
     }
 
     private void configureScreen() {
-        binding.tvResourceTitle.setText(resource.title);
-        binding.btnResourceSearch.setEnabled(resource.searchable);
         binding.searchControls.setVisibility(resource.searchable ? View.VISIBLE : View.GONE);
         binding.btnResourceCreate.setVisibility(resource.canCreate ? View.VISIBLE : View.GONE);
         boolean productCreate = "productos".equals(resource.key) && resource.canCreate;
@@ -210,19 +242,24 @@ public class ResourceFragment extends Fragment {
 
     private void observeRecords() {
         viewModel.getLoading().observe(getViewLifecycleOwner(), loading -> {
-            if (loading) {
-                binding.tvPageNumber.setText(R.string.home_loading);
-            } else if (binding != null && page == lastLoadedPage) {
+            if (binding == null) {
+                return;
+            }
+            binding.resourceLoading.setVisibility(
+                    Boolean.TRUE.equals(loading) ? View.VISIBLE : View.GONE);
+            boolean isLoading = Boolean.TRUE.equals(loading);
+            binding.resourceRecords.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+            if (!isLoading && page == lastLoadedPage) {
                 showPageNumber();
             }
-            updatePagerControls(Boolean.TRUE.equals(loading));
+            updatePagerControls(isLoading);
         });
         viewModel.getError().observe(getViewLifecycleOwner(), message -> {
             if (message != null && !message.isEmpty()) {
                 page = lastLoadedPage;
                 showPageNumber();
                 updatePagerControls(false);
-                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+                showListError(message);
             }
         });
         viewModel.getRecords().observe(getViewLifecycleOwner(), this::renderPage);
@@ -231,14 +268,14 @@ public class ResourceFragment extends Fragment {
     private void renderPage(JsonElement response) {
         if (binding == null || response == null || !response.isJsonObject()) {
             restoreLastLoadedPage();
-            showMessage(R.string.resource_empty);
+            showListError(getString(R.string.resource_invalid_response));
             return;
         }
         JsonObject pageResult = response.getAsJsonObject();
         JsonElement content = pageResult.get("content");
         if (content == null || !content.isJsonArray()) {
             restoreLastLoadedPage();
-            showMessage(R.string.resource_empty);
+            showListError(getString(R.string.resource_invalid_response));
             return;
         }
         JsonArray records = content.getAsJsonArray();
@@ -254,6 +291,7 @@ public class ResourceFragment extends Fragment {
         showPageNumber();
         updatePagerControls(false);
         binding.resourceRecords.removeAllViews();
+        binding.resourceRecords.setVisibility(View.VISIBLE);
         if (records.size() == 0) {
             showMessage(R.string.resource_empty);
             return;
@@ -282,8 +320,11 @@ public class ResourceFragment extends Fragment {
         }
         binding.btnPreviousPage.setEnabled(!loading && page > 0);
         binding.btnNextPage.setEnabled(!loading && page + 1 < totalPages);
-        binding.btnResourceSearch.setEnabled(
-                !loading && resource != null && resource.searchable);
+        binding.btnResourceCreate.setEnabled(
+                !loading && resource != null && resource.canCreate);
+        binding.btnResourceImage.setEnabled(
+                !loading && resource != null && "productos".equals(resource.key)
+                        && resource.canCreate);
     }
 
     private void showDatePicker(TextInputEditText input, boolean includeTime) {
@@ -304,59 +345,252 @@ public class ResourceFragment extends Fragment {
 
     private void addRecordCard(JsonElement record) {
         MaterialCardView card = new MaterialCardView(requireContext());
-        card.setCardBackgroundColor(requireContext().getColor(R.color.white));
-        card.setRadius(getResources().getDimension(R.dimen.auth_card_radius));
-        card.setCardElevation(getResources().getDimension(R.dimen.auth_card_elevation));
+        card.setCardBackgroundColor(requireContext().getColor(R.color.surface));
+        card.setRadius(getResources().getDimension(R.dimen.card_corner_radius));
+        card.setCardElevation(getResources().getDimension(R.dimen.card_elevation));
         card.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.card_stroke_width));
-        card.setStrokeColor(requireContext().getColor(R.color.card_outline));
+        card.setStrokeColor(requireContext().getColor(R.color.line));
         LinearLayout content = new LinearLayout(requireContext());
         content.setOrientation(LinearLayout.VERTICAL);
-        content.setPadding(16, 12, 16, 12);
+        int horizontalPadding = getResources().getDimensionPixelSize(R.dimen.space_4);
+        int verticalPadding = getResources().getDimensionPixelSize(R.dimen.space_3);
+        content.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
         if (("catalogo".equals(resource.key) || "productos".equals(resource.key))
                 && record.isJsonObject()) {
             addProductImage(content, record.getAsJsonObject());
         }
-        TextView summary = new TextView(requireContext());
-        summary.setText(summary(record));
-        summary.setTextColor(requireContext().getColor(R.color.auth_ink));
-        summary.setTextSize(16);
-        content.addView(summary);
-        LinearLayout actions = new LinearLayout(requireContext());
-        actions.setOrientation(LinearLayout.HORIZONTAL);
         long id = record.isJsonObject() && record.getAsJsonObject().has("id")
                 ? record.getAsJsonObject().get("id").getAsLong()
                 : -1;
-        if (id > 0) {
-            if (resource.canDetail) {
-                addAction(actions, R.string.resource_details, R.drawable.ic_info,
-                        ignored -> showDetails(id));
-            }
-            if (resource.canUpdate) {
-                addAction(actions, R.string.resource_edit, R.drawable.ic_edit,
-                        ignored -> showEditor(record, id));
-            }
-            if (resource.canDelete) {
-                addAction(actions, R.string.resource_delete, R.drawable.ic_delete,
-                        ignored -> confirmDelete(id));
-            }
-            if ("ventas".equals(resource.key) || "compras".equals(resource.key)) {
-                addAction(actions, R.string.resource_ticket, R.drawable.ic_receipt,
-                        ignored -> downloadTicket(id));
-                if ("ventas".equals(resource.key)) {
-                    addAction(actions, R.string.resource_email_ticket,
-                            R.drawable.ic_email,
-                            ignored -> promptEmailTicket(id));
-                }
-            }
+        JsonObject object = record.isJsonObject() ? record.getAsJsonObject() : new JsonObject();
+        addRecordHeader(content, object, id, record);
+        addRecordMetadata(content, object);
+        addRecordStatus(content, object);
+        if (id > 0 && resource.canDetail) {
+            String name = recordTitle(object, id);
+            card.setContentDescription(getString(R.string.resource_open_detail, name));
+            card.setClickable(true);
+            card.setFocusable(true);
+            card.setOnClickListener(ignored -> showDetails(id));
         }
-        content.addView(actions);
         card.addView(content);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.auth_card_spacing);
+        params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.space_3);
         binding.resourceRecords.addView(card, params);
+    }
+
+    private void addRecordHeader(
+            LinearLayout parent,
+            JsonObject object,
+            long id,
+            JsonElement record
+    ) {
+        LinearLayout row = new LinearLayout(requireContext());
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+
+        TextView title = new TextView(requireContext());
+        title.setText(recordTitle(object, id));
+        title.setTextColor(requireContext().getColor(R.color.ink));
+        title.setTextSize(getResources().getDimension(R.dimen.card_title_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        title.setMaxLines(2);
+        LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+        row.addView(title, titleParams);
+
+        if (id > 0) {
+            TextView idChip = new TextView(requireContext());
+            idChip.setText(getString(R.string.resource_id_chip, id));
+            idChip.setTextColor(requireContext().getColor(R.color.chip_text));
+            idChip.setTextSize(getResources().getDimension(R.dimen.caption_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
+            idChip.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            idChip.setBackgroundResource(R.drawable.chip_background);
+            int horizontal = getResources().getDimensionPixelSize(R.dimen.space_2);
+            int vertical = getResources().getDimensionPixelSize(R.dimen.space_1);
+            idChip.setPadding(horizontal, vertical, horizontal, vertical);
+            LinearLayout.LayoutParams chipParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            chipParams.setMarginStart(getResources().getDimensionPixelSize(R.dimen.space_2));
+            row.addView(idChip, chipParams);
+        }
+
+        if (hasRecordActions(id)) {
+            MaterialButton more = createOverflowButton();
+            LinearLayout.LayoutParams moreParams = new LinearLayout.LayoutParams(
+                    getResources().getDimensionPixelSize(R.dimen.touch_target_min),
+                    getResources().getDimensionPixelSize(R.dimen.touch_target_min));
+            moreParams.setMarginStart(getResources().getDimensionPixelSize(R.dimen.space_1));
+            row.addView(more, moreParams);
+            more.setOnClickListener(anchor -> showRecordMenu(more, record, id));
+        }
+        parent.addView(row);
+    }
+
+    private void addRecordMetadata(LinearLayout parent, JsonObject object) {
+        int lines = 0;
+        for (String field : new String[]{"email", "rol", "numeroEmpleado", "numeroAdministrador",
+                "turno", "cajaAsignada", "categoriaNombre", "codigoBarras", "precio", "total",
+                "stock", "puntos", "nivelLealtad", "proveedorNombre", "clienteNombre",
+                "cajeroNombre", "fecha", "metodoPago"}) {
+            String value = primitiveValue(object.get(field));
+            if (value.isEmpty()) {
+                continue;
+            }
+            TextView detail = new TextView(requireContext());
+            detail.setText(fieldLabel(field) + ": " + value);
+            boolean price = "precio".equals(field) || "total".equals(field);
+            detail.setTextColor(requireContext().getColor(
+                    price ? R.color.accent : R.color.muted));
+            detail.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
+            if (price) {
+                detail.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            }
+            detail.setMaxLines(1);
+            detail.setEllipsize(android.text.TextUtils.TruncateAt.END);
+            parent.addView(detail);
+            lines++;
+            if (lines == 3) {
+                break;
+            }
+        }
+    }
+
+    private void addRecordStatus(LinearLayout parent, JsonObject object) {
+        JsonElement state = object.has("activa") ? object.get("activa") : object.get("activo");
+        if (state == null || state.isJsonNull()) {
+            return;
+        }
+        boolean active = state.isJsonPrimitive() && state.getAsJsonPrimitive().isBoolean()
+                ? state.getAsBoolean()
+                : "ACTIVO".equalsIgnoreCase(state.getAsString())
+                        || "ACTIVA".equalsIgnoreCase(state.getAsString());
+        TextView status = new TextView(requireContext());
+        status.setText(active ? R.string.status_active : R.string.status_inactive);
+        status.setTextColor(requireContext().getColor(
+                active ? R.color.success : R.color.muted_on_line));
+        status.setTextSize(getResources().getDimension(R.dimen.caption_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
+        status.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        status.setPadding(
+                getResources().getDimensionPixelSize(R.dimen.space_2),
+                getResources().getDimensionPixelSize(R.dimen.space_1),
+                getResources().getDimensionPixelSize(R.dimen.space_2),
+                getResources().getDimensionPixelSize(R.dimen.space_1));
+        status.setBackgroundResource(active
+                ? R.drawable.status_active_background
+                : R.drawable.chip_background);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.topMargin = getResources().getDimensionPixelSize(R.dimen.space_1);
+        parent.addView(status, params);
+    }
+
+    private String recordTitle(JsonObject object, long id) {
+        for (String field : new String[]{"nombre", "productoNombre", "clienteNombre",
+                "proveedorNombre", "cajeroNombre", "administradorNombre", "descripcion"}) {
+            String value = primitiveValue(object.get(field));
+            if (!value.isEmpty()) {
+                return value;
+            }
+        }
+        String email = primitiveValue(object.get("email"));
+        return email.isEmpty() ? getString(R.string.resource_detail_record, id) : email;
+    }
+
+    private String primitiveValue(JsonElement value) {
+        if (value == null || value.isJsonNull() || !value.isJsonPrimitive()) {
+            return "";
+        }
+        String text = value.getAsString().trim();
+        return text;
+    }
+
+    private boolean hasRecordActions(long id) {
+        return id > 0 && (resource.canDetail || resource.canUpdate || resource.canDelete
+                || "ventas".equals(resource.key) || "compras".equals(resource.key));
+    }
+
+    private MaterialButton createOverflowButton() {
+        MaterialButton button = new MaterialButton(requireContext());
+        button.setText(null);
+        button.setContentDescription(getString(R.string.resource_more_actions));
+        button.setIconResource(R.drawable.ic_more);
+        button.setIconSize(getResources().getDimensionPixelSize(R.dimen.space_3));
+        button.setIconTint(ColorStateList.valueOf(requireContext().getColor(R.color.muted)));
+        button.setBackgroundTintList(ColorStateList.valueOf(
+                requireContext().getColor(R.color.surface)));
+        button.setStrokeColor(ColorStateList.valueOf(requireContext().getColor(R.color.line)));
+        button.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.card_stroke_width));
+        button.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.button_corner_radius));
+        button.setInsetTop(0);
+        button.setInsetBottom(0);
+        return button;
+    }
+
+    private void showRecordMenu(View anchor, JsonElement record, long id) {
+        PopupMenu popup = new PopupMenu(requireContext(), anchor);
+        Menu menu = popup.getMenu();
+        addMenuAction(menu, 1, R.string.resource_details, R.drawable.ic_info,
+                resource.canDetail, R.color.accent);
+        addMenuAction(menu, 2, R.string.resource_edit, R.drawable.ic_edit,
+                resource.canUpdate, R.color.accent);
+        addMenuAction(menu, 3, R.string.resource_delete, R.drawable.ic_delete,
+                resource.canDelete, R.color.danger);
+        boolean sale = "ventas".equals(resource.key) || "compras".equals(resource.key);
+        addMenuAction(menu, 4, R.string.resource_ticket, R.drawable.ic_receipt,
+                sale, R.color.accent);
+        addMenuAction(menu, 5, R.string.resource_email_ticket, R.drawable.ic_email,
+                "ventas".equals(resource.key), R.color.accent);
+        popup.setForceShowIcon(true);
+        popup.setOnMenuItemClickListener(item -> onRecordAction(item.getItemId(), record, id));
+        popup.show();
+    }
+
+    private void addMenuAction(
+            Menu menu,
+            int itemId,
+            int title,
+            int icon,
+            boolean visible,
+            int tint
+    ) {
+        if (!visible) {
+            return;
+        }
+        MenuItem item = menu.add(Menu.NONE, itemId, itemId, title);
+        android.graphics.drawable.Drawable drawable =
+                androidx.core.content.ContextCompat.getDrawable(requireContext(), icon);
+        if (drawable != null) {
+            drawable = drawable.mutate();
+            drawable.setTintList(ColorStateList.valueOf(requireContext().getColor(tint)));
+            item.setIcon(drawable);
+        }
+    }
+
+    private boolean onRecordAction(int action, JsonElement record, long id) {
+        if (action == 1) {
+            showDetails(id);
+        } else if (action == 2) {
+            showEditor(record, id);
+        } else if (action == 3) {
+            confirmDelete(id);
+        } else if (action == 4) {
+            downloadTicket(id);
+        } else if (action == 5) {
+            promptEmailTicket(id);
+        } else {
+            return false;
+        }
+        return true;
     }
 
     private void addProductImage(LinearLayout parent, JsonObject product) {
@@ -386,29 +620,6 @@ public class ResourceFragment extends Fragment {
                 .error(R.drawable.ic_image)
                 .centerCrop()
                 .into(imageView);
-    }
-
-    private void addAction(
-            LinearLayout parent,
-            int label,
-            int icon,
-            View.OnClickListener listener
-    ) {
-        MaterialButton button = new MaterialButton(requireContext());
-        button.setText(label);
-        button.setAllCaps(false);
-        button.setTextColor(requireContext().getColor(R.color.white));
-        button.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
-                requireContext().getColor(R.color.auth_secondary)));
-        button.setIconResource(icon);
-        button.setIconTintResource(R.color.white);
-        button.setCornerRadius(getResources()
-                .getDimensionPixelSize(R.dimen.input_corner_radius));
-        button.setOnClickListener(listener);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
-        params.setMarginEnd(getResources().getDimensionPixelSize(R.dimen.action_button_spacing));
-        parent.addView(button, params);
     }
 
     private void showDetails(long id) {
@@ -2219,10 +2430,70 @@ public class ResourceFragment extends Fragment {
             return;
         }
         binding.resourceRecords.removeAllViews();
-        TextView empty = new TextView(requireContext());
-        empty.setText(message);
-        empty.setTextColor(requireContext().getColor(R.color.auth_muted));
+        LinearLayout empty = new LinearLayout(requireContext());
+        empty.setOrientation(LinearLayout.VERTICAL);
+        empty.setGravity(Gravity.CENTER);
+        empty.setMinimumHeight(
+                getResources().getDimensionPixelSize(R.dimen.empty_state_min_height));
+        ImageView icon = new ImageView(requireContext());
+        icon.setImageResource(R.drawable.ic_search);
+        icon.setColorFilter(requireContext().getColor(R.color.muted_on_soft));
+        icon.setContentDescription(null);
+        int iconSize = getResources().getDimensionPixelSize(R.dimen.empty_icon_size);
+        empty.addView(icon, new LinearLayout.LayoutParams(iconSize, iconSize));
+        TextView label = new TextView(requireContext());
+        label.setText(message);
+        label.setTextColor(requireContext().getColor(R.color.muted_on_soft));
+        label.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
+        label.setGravity(Gravity.CENTER);
+        label.setPadding(0, getResources().getDimensionPixelSize(R.dimen.space_2),
+                0, 0);
+        empty.addView(label);
         binding.resourceRecords.addView(empty);
+        binding.resourceRecords.setVisibility(View.VISIBLE);
+    }
+
+    private void showListError(String message) {
+        if (binding == null) {
+            return;
+        }
+        binding.resourceRecords.removeAllViews();
+        MaterialCardView notice = new MaterialCardView(requireContext());
+        notice.setCardBackgroundColor(requireContext().getColor(R.color.error_notice_bg));
+        notice.setRadius(getResources().getDimension(R.dimen.card_corner_radius));
+        notice.setCardElevation(getResources().getDimension(R.dimen.card_elevation));
+        notice.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.card_stroke_width));
+        notice.setStrokeColor(requireContext().getColor(R.color.danger_border));
+        LinearLayout content = new LinearLayout(requireContext());
+        content.setOrientation(LinearLayout.VERTICAL);
+        int padding = getResources().getDimensionPixelSize(R.dimen.space_4);
+        content.setPadding(padding, padding, padding, padding);
+        TextView error = new TextView(requireContext());
+        error.setText(message == null || message.trim().isEmpty()
+                ? getString(R.string.resource_load_error)
+                : message);
+        error.setTextColor(requireContext().getColor(R.color.danger));
+        error.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
+        content.addView(error);
+        MaterialButton retry = new MaterialButton(requireContext());
+        retry.setText(R.string.resource_retry);
+        retry.setTextColor(requireContext().getColor(R.color.accent));
+        retry.setStrokeColor(ColorStateList.valueOf(requireContext().getColor(R.color.accent)));
+        retry.setBackgroundTintList(ColorStateList.valueOf(
+                requireContext().getColor(R.color.surface)));
+        retry.setCornerRadius(getResources().getDimensionPixelSize(
+                R.dimen.button_corner_radius));
+        retry.setOnClickListener(ignored -> loadRecords());
+        LinearLayout.LayoutParams retryParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                getResources().getDimensionPixelSize(R.dimen.touch_target_min));
+        retryParams.topMargin = getResources().getDimensionPixelSize(R.dimen.space_2);
+        content.addView(retry, retryParams);
+        notice.addView(content);
+        binding.resourceRecords.addView(notice);
+        binding.resourceRecords.setVisibility(View.VISIBLE);
     }
 
     private String summary(JsonElement record) {
@@ -2283,6 +2554,24 @@ public class ResourceFragment extends Fragment {
                 return "ID";
             case "rol":
                 return "Rol";
+            case "numeroEmpleado":
+                return "Número de empleado";
+            case "numeroAdministrador":
+                return "Número de administrador";
+            case "turno":
+                return "Turno";
+            case "cajaAsignada":
+                return "Caja asignada";
+            case "categoriaNombre":
+                return "Categoría";
+            case "codigoBarras":
+                return "Código de barras";
+            case "puntos":
+                return "Puntos";
+            case "nivelLealtad":
+                return "Nivel";
+            case "metodoPago":
+                return "Método de pago";
             default:
                 return "Correo";
         }
@@ -2290,6 +2579,9 @@ public class ResourceFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        if (searchTask != null) {
+            searchHandler.removeCallbacks(searchTask);
+        }
         if (selectedImage != null && !productUploadInProgress) {
             selectedImage.delete();
             selectedImage = null;

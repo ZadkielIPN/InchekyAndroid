@@ -7,6 +7,7 @@
     <color name="ink">#172554</color>
     <color name="muted">#64748B</color>
     <color name="muted_on_soft">#5F7187</color>
+    <color name="muted_on_line">#56697F</color>
     <color name="line">#DBEAFE</color>
     <color name="soft">#EFF6FF</color>
     <color name="surface">#FFFFFF</color>
@@ -19,6 +20,7 @@
     <color name="input_border">#CBD5E1</color>
     <color name="input_halo">#331D4ED8</color>
     <color name="topbar_user_border">#BFDBFE</color>
+    <color name="pager_disabled_alpha">#665F7187</color>
     <color name="danger">#B91C1C</color>
     <color name="danger_border">#FCA5A5</color>
     <color name="danger_pressed">#FEF2F2</color>

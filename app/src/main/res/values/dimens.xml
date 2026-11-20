@@ -7,6 +7,7 @@
     <dimen name="space_6">32dp</dimen>
     <dimen name="screen_margin">16dp</dimen>
     <dimen name="touch_target_min">48dp</dimen>
+    <dimen name="list_fab_clearance">96dp</dimen>
     <dimen name="button_corner_radius">8dp</dimen>
     <dimen name="card_corner_radius">16dp</dimen>
     <dimen name="chip_corner_radius">999dp</dimen>
@@ -23,6 +24,9 @@
     <dimen name="brand_text_size">20sp</dimen>
     <dimen name="body_text_size">14sp</dimen>
     <dimen name="caption_text_size">12sp</dimen>
+    <dimen name="card_title_text_size">16sp</dimen>
+    <dimen name="empty_state_min_height">160dp</dimen>
+    <dimen name="empty_icon_size">40dp</dimen>
     <dimen name="product_image_height">176dp</dimen>
     <dimen name="action_button_spacing">4dp</dimen>
     <dimen name="drawer_width">304dp</dimen>
