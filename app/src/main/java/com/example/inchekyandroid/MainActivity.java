@@ -67,8 +67,10 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener(this::onDestinationChanged);
         ViewCompat.setOnApplyWindowInsetsListener(binding.drawerLayout, (view, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
             binding.mainContent.setPadding(
-                    systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                    systemBars.left, systemBars.top, systemBars.right,
+                    Math.max(systemBars.bottom, ime.bottom));
             binding.drawerPanel.setPadding(0, systemBars.top, 0, systemBars.bottom);
             return insets;
         });
@@ -89,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
         userPill.setEllipsize(android.text.TextUtils.TruncateAt.END);
         userPill.setMaxWidth(getResources().getDimensionPixelSize(R.dimen.topbar_user_max_width));
         userPill.setTextColor(getColor(R.color.ink));
-        userPill.setTextSize(14);
+        userPill.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
         userPill.setTypeface(userPill.getTypeface(), android.graphics.Typeface.BOLD);
         userPill.setPadding(
                 getResources().getDimensionPixelSize(R.dimen.space_3),

@@ -4,13 +4,13 @@
     android:id="@+id/dashboardRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/auth_background">
+    android:background="@color/soft">
 
     <ImageView
         android:id="@+id/ivDashboardLogo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="@dimen/drawer_logo_size"
+        android:layout_height="@dimen/drawer_logo_size"
+        android:layout_marginStart="@dimen/screen_margin"
         android:contentDescription="@string/app_logo_description"
         android:scaleType="fitCenter"
         android:src="@drawable/logo_launcher_foreground"
@@ -21,40 +21,27 @@
         android:id="@+id/tvDashboardTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingStart="8dp"
-        android:paddingTop="18dp"
-        android:paddingEnd="16dp"
+        android:paddingStart="@dimen/space_2"
+        android:paddingTop="@dimen/space_2"
+        android:paddingEnd="@dimen/screen_margin"
         android:text="@string/home_title"
-        android:textColor="@color/auth_ink"
-        android:textSize="26sp"
+        android:textColor="@color/ink"
+        android:textSize="@dimen/screen_title_text_size"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivDashboardLogo"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvDashboardSubtitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="20dp"
-        android:textColor="@color/auth_muted"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnDashboardProfile" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDashboardProfile"
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/touch_target_min"
         android:text="@string/home_profile"
         android:textAllCaps="false"
-        android:textColor="@color/auth_primary"
+        android:textColor="@color/accent"
         app:icon="@drawable/ic_person_circle"
-        app:iconTint="@color/auth_primary"
+        app:iconTint="@color/accent"
         app:layout_constraintEnd_toStartOf="@id/btnDashboardLogout"
         app:layout_constraintTop_toBottomOf="@id/tvDashboardTitle" />
 
@@ -62,30 +49,45 @@
         android:id="@+id/btnDashboardLogout"
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
+        android:layout_height="@dimen/touch_target_min"
+        android:layout_marginEnd="@dimen/space_2"
         android:text="@string/home_logout"
         android:textAllCaps="false"
-        android:textColor="@color/auth_primary"
+        android:textColor="@color/accent"
         app:icon="@drawable/ic_logout"
-        app:iconTint="@color/auth_primary"
+        app:iconTint="@color/accent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDashboardTitle" />
+
+    <TextView
+        android:id="@+id/tvDashboardSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/screen_margin"
+        android:paddingTop="@dimen/space_1"
+        android:paddingEnd="@dimen/screen_margin"
+        android:textColor="@color/muted_on_soft"
+        android:textSize="@dimen/body_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnDashboardProfile" />
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:padding="16dp"
+        android:padding="@dimen/screen_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDashboardSubtitle">
 
-        <LinearLayout
+        <GridLayout
             android:id="@+id/dashboardResources"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:columnCount="2"
+            android:orientation="horizontal"
+            android:useDefaultMargins="false" />
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

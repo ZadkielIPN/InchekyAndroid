@@ -4,13 +4,15 @@
     android:id="@+id/profileRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/auth_background">
+    android:background="@color/soft">
 
     <ScrollView
+        android:id="@+id/profileScroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/profileSaveArea"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,121 +21,163 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="@dimen/screen_margin">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnProfileBack"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_height="@dimen/touch_target_min"
+                android:layout_marginBottom="@dimen/space_2"
                 android:contentDescription="@string/navigation_back"
                 android:gravity="start|center_vertical"
                 android:text="@string/navigation_back"
                 android:textAllCaps="false"
-                android:textColor="@color/auth_primary"
+                android:textColor="@color/accent"
                 app:icon="@drawable/ic_arrow_back"
-                app:iconTint="@color/auth_primary" />
+                app:iconTint="@color/accent" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="@dimen/space_4"
                 android:text="@string/home_profile"
-                android:textColor="@color/auth_ink"
-                android:textSize="26sp"
+                android:textColor="@color/ink"
+                android:textSize="@dimen/screen_title_text_size"
                 android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilProfileName"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="@string/register_name"
-                app:boxBackgroundMode="outline"
-                app:boxStrokeColor="@color/input_stroke">
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation"
+                app:contentPadding="@dimen/space_5"
+                app:strokeColor="@color/line"
+                app:strokeWidth="@dimen/card_stroke_width">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etProfileName"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName|textCapWords"
-                    android:maxLength="255"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilProfileSurname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="@string/register_surname"
-                app:boxBackgroundMode="outline"
-                app:boxStrokeColor="@color/input_stroke">
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilProfileName"
+                        style="@style/Widget.Incheky.TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_3"
+                        android:hint="@string/register_name">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etProfileSurname"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPersonName|textCapWords"
-                    android:maxLength="255"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etProfileName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPersonName|textCapWords"
+                            android:maxLength="255"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilProfileEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="@string/login_email"
-                app:boxBackgroundMode="outline"
-                app:boxStrokeColor="@color/input_stroke"
-                app:startIconDrawable="@drawable/ic_email"
-                app:startIconTint="@color/auth_primary">
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilProfileSurname"
+                        style="@style/Widget.Incheky.TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_3"
+                        android:hint="@string/register_surname">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etProfileEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etProfileSurname"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPersonName|textCapWords"
+                            android:maxLength="255"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilProfilePassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:hint="@string/profile_new_password"
-                app:boxBackgroundMode="outline"
-                app:boxStrokeColor="@color/input_stroke"
-                app:endIconMode="password_toggle">
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilProfileEmail"
+                        style="@style/Widget.Incheky.TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_3"
+                        android:hint="@string/login_email"
+                        app:startIconDrawable="@drawable/ic_email"
+                        app:startIconTint="@color/accent">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etProfilePassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="newPassword"
-                    android:inputType="textPassword"
-                    android:maxLength="20"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etProfileEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints="emailAddress"
+                            android:imeOptions="actionNext"
+                            android:inputType="textEmailAddress"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/tvProfileFeedback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilProfilePassword"
+                        style="@style/Widget.Incheky.TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_3"
+                        android:hint="@string/profile_new_password"
+                        app:endIconMode="password_toggle">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnProfileSave"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="@string/profile_save"
-                android:textAllCaps="false"
-                app:backgroundTint="@color/auth_primary"
-                app:cornerRadius="12dp" />
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etProfilePassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints="newPassword"
+                            android:imeOptions="actionDone"
+                            android:inputType="textPassword"
+                            android:maxLength="20"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/tvProfileFeedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_3"
+                        android:padding="@dimen/space_3"
+                        android:textSize="@dimen/body_text_size"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/profileSaveArea"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/touch_target_min"
+        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginEnd="@dimen/screen_margin"
+        android:layout_marginBottom="@dimen/space_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnProfileSave"
+            style="@style/Widget.Incheky.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/profile_save"
+            android:textSize="@dimen/body_text_size" />
+
+        <ProgressBar
+            android:id="@+id/profileProgress"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="@dimen/auth_progress_size"
+            android:layout_height="@dimen/auth_progress_size"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/space_3"
+            android:importantForAccessibility="no"
+            android:indeterminateTint="@color/white"
+            android:visibility="gone" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

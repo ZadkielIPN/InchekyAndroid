@@ -19,8 +19,10 @@ import android.view.LayoutInflater;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +40,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -55,6 +58,7 @@ import com.example.inchekyandroid.data.remote.RetrofitClient;
 import com.example.inchekyandroid.data.remote.ProductImageUrl;
 import com.example.inchekyandroid.databinding.ActivityResourceBinding;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -105,6 +109,7 @@ public class ResourceFragment extends Fragment {
     private File selectedImage;
     private String selectedImageMimeType;
     private boolean productUploadInProgress;
+    private boolean createFormOnLoad;
     private ActivityResultLauncher<String> imagePicker;
     private final Handler searchHandler = new Handler(Looper.getMainLooper());
     private Runnable searchTask;
@@ -132,6 +137,8 @@ public class ResourceFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this).get(ResourceViewModel.class);
+        createFormOnLoad = savedInstanceState == null && getArguments() != null
+                && getArguments().getBoolean("createOnOpen", false);
         observeRecords();
         binding.btnResourceCreate.setEnabled(false);
         binding.btnResourceImage.setEnabled(false);
@@ -201,6 +208,10 @@ public class ResourceFragment extends Fragment {
                     return;
                 }
                 configureScreen();
+                if (createFormOnLoad) {
+                    createFormOnLoad = false;
+                    showEditor(null, 0);
+                }
                 loadRecords();
             }
 
@@ -693,7 +704,8 @@ public class ResourceFragment extends Fragment {
         header.setText(getString(R.string.resource_detail_record,
                 displayDetailValue("id", id)));
         header.setTextColor(requireContext().getColor(R.color.auth_primary));
-        header.setTextSize(18);
+        header.setTextSize(getResources().getDimension(R.dimen.detail_header_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
         header.setTypeface(null, android.graphics.Typeface.BOLD);
         header.setPadding(0, 0, 0,
                 getResources().getDimensionPixelSize(R.dimen.form_field_spacing));
@@ -710,11 +722,13 @@ public class ResourceFragment extends Fragment {
         TextView label = new TextView(requireContext());
         label.setText(detailLabel(key));
         label.setTextColor(requireContext().getColor(R.color.auth_muted));
-        label.setTextSize(12);
+        label.setTextSize(getResources().getDimension(R.dimen.caption_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
         TextView content = new TextView(requireContext());
         content.setText(text);
         content.setTextColor(requireContext().getColor(R.color.auth_ink));
-        content.setTextSize(16);
+        content.setTextSize(getResources().getDimension(R.dimen.card_title_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
         content.setTypeface(null, android.graphics.Typeface.BOLD);
         row.addView(label);
         row.addView(content);
@@ -730,7 +744,8 @@ public class ResourceFragment extends Fragment {
                 ? R.string.resource_detail_sale_items
                 : R.string.resource_detail_supply_items);
         heading.setTextColor(requireContext().getColor(R.color.auth_ink));
-        heading.setTextSize(17);
+        heading.setTextSize(getResources().getDimension(R.dimen.card_title_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
         heading.setTypeface(null, android.graphics.Typeface.BOLD);
         LinearLayout.LayoutParams headingParams = detailLayoutParams();
         headingParams.topMargin = getResources()
@@ -761,7 +776,8 @@ public class ResourceFragment extends Fragment {
             TextView product = new TextView(requireContext());
             product.setText(detailProductName(item));
             product.setTextColor(requireContext().getColor(R.color.auth_ink));
-            product.setTextSize(16);
+            product.setTextSize(getResources().getDimension(R.dimen.card_title_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
             product.setTypeface(null, android.graphics.Typeface.BOLD);
             body.addView(product);
 
@@ -946,7 +962,9 @@ public class ResourceFragment extends Fragment {
         if (hasLineItems(resource.key)) {
             TextView detailTitle = new TextView(requireContext());
             detailTitle.setText(R.string.resource_line_items);
-            detailTitle.setTextSize(16);
+            detailTitle.setTextSize(getResources().getDimension(
+                    R.dimen.card_title_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
             detailTitle.setTextColor(requireContext().getColor(R.color.auth_ink));
             addFormView(form, detailTitle, true);
             detailsContainer = new LinearLayout(requireContext());
@@ -968,12 +986,15 @@ public class ResourceFragment extends Fragment {
         if ("ventas".equals(resource.key)) {
             TextView summaryTitle = new TextView(requireContext());
             summaryTitle.setText(R.string.sale_estimate_title);
-            summaryTitle.setTextSize(16);
+            summaryTitle.setTextSize(getResources().getDimension(
+                    R.dimen.card_title_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
             summaryTitle.setTextColor(requireContext().getColor(R.color.auth_ink));
             addFormView(form, summaryTitle, true);
             saleSummary[0] = new TextView(requireContext());
             saleSummary[0].setTextColor(requireContext().getColor(R.color.auth_ink));
-            saleSummary[0].setTextSize(14);
+            saleSummary[0].setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
             saleSummary[0].setPadding(spacing, spacing, spacing, spacing);
             MaterialCardView summaryCard = createDetailCard();
             summaryCard.addView(saleSummary[0]);
@@ -981,7 +1002,8 @@ public class ResourceFragment extends Fragment {
             TextView summaryHint = new TextView(requireContext());
             summaryHint.setText(R.string.sale_estimate_disclaimer);
             summaryHint.setTextColor(requireContext().getColor(R.color.auth_muted));
-            summaryHint.setTextSize(12);
+            summaryHint.setTextSize(getResources().getDimension(R.dimen.caption_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
             addFormView(form, summaryHint);
             configureSaleForm(inputs, detailRows, saleSummary[0]);
         }
@@ -994,15 +1016,22 @@ public class ResourceFragment extends Fragment {
         }
 
         ScrollView scroll = new ScrollView(requireContext());
+        scroll.setFillViewport(true);
+        scroll.setClipToPadding(false);
         scroll.addView(form);
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setTitle(existing == null ? R.string.resource_create : R.string.resource_edit)
                 .setView(scroll)
                 .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(android.R.string.ok, null)
+                .setPositiveButton(R.string.resource_save, null)
                 .create();
-        dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setOnClickListener(button -> {
+        dialog.setOnShowListener(ignored -> {
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            }
+            configureEditorImeActions(inputs, dialog);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(button -> {
                     JsonObject request;
                     try {
                         request = buildRequest(inputs);
@@ -1029,8 +1058,44 @@ public class ResourceFragment extends Fragment {
                     }
                     dialog.dismiss();
                     submitRequest(existing == null, id, request);
-                }));
+            });
+        });
         dialog.show();
+    }
+
+    private void configureEditorImeActions(List<FieldInput> inputs, AlertDialog dialog) {
+        List<FieldInput> keyboardInputs = new ArrayList<>();
+        for (FieldInput input : inputs) {
+            if (input.editText != null && isKeyboardInput(input.spec.type)) {
+                keyboardInputs.add(input);
+            }
+        }
+        for (int i = 0; i < keyboardInputs.size(); i++) {
+            FieldInput input = keyboardInputs.get(i);
+            boolean hasNext = i + 1 < keyboardInputs.size();
+            input.editText.setImeOptions(
+                    hasNext ? EditorInfo.IME_ACTION_NEXT : EditorInfo.IME_ACTION_DONE);
+            input.editText.setOnEditorActionListener((text, actionId, event) -> {
+                boolean enterPressed = event != null
+                        && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                        && event.getAction() == KeyEvent.ACTION_DOWN;
+                if (actionId == EditorInfo.IME_ACTION_NEXT && hasNext) {
+                    keyboardInputs.get(keyboardInputs.indexOf(input) + 1)
+                            .editText.requestFocus();
+                    return true;
+                }
+                if (actionId == EditorInfo.IME_ACTION_DONE || enterPressed) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+                    return true;
+                }
+                return false;
+            });
+        }
+    }
+
+    private boolean isKeyboardInput(int type) {
+        return type == INPUT_TEXT || type == INPUT_NUMBER || type == INPUT_DECIMAL
+                || type == INPUT_EMAIL || type == INPUT_PASSWORD;
     }
 
     private FieldInput createField(LinearLayout parent, FieldSpec spec, JsonElement existing) {
@@ -1046,25 +1111,36 @@ public class ResourceFragment extends Fragment {
             addFormView(parent, toggle);
             input.toggle = toggle;
             input.inputView = toggle;
-        } else if (spec.type == INPUT_ENUM || spec.type == INPUT_RELATION) {
+        } else if (spec.type == INPUT_ENUM) {
             TextView label = new TextView(requireContext());
             label.setText(spec.label);
-            label.setTextColor(requireContext().getColor(R.color.auth_ink));
+            label.setTextColor(requireContext().getColor(R.color.ink));
+            label.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
             addFormView(parent, label);
             Spinner spinner = new Spinner(requireContext());
             addFormView(parent, spinner);
             input.spinner = spinner;
             input.inputView = spinner;
-            if (spec.type == INPUT_ENUM) {
-                setSpinnerValues(spinner, spec.options, initial == null ? spec.defaultValue
-                        : initial.getAsString());
-            } else {
-                loadRelationOptions(input, relationId(initial));
-            }
+            setSpinnerValues(spinner, spec.options, initial == null ? spec.defaultValue
+                    : initial.getAsString());
+        } else if (spec.type == INPUT_RELATION) {
+            TextView label = new TextView(requireContext());
+            label.setText(spec.label);
+            label.setTextColor(requireContext().getColor(R.color.ink));
+            label.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
+            addFormView(parent, label);
+            MaterialButton selector = createDropdownButton();
+            selector.setText(getString(R.string.entity_select, spec.label));
+            selector.setOnClickListener(ignored -> chooseRelationOption(input));
+            addFormView(parent, selector);
+            input.relationButton = selector;
+            input.inputView = selector;
+            loadRelationOptions(input, relationId(initial));
         } else if (spec.type == INPUT_MULTI_RELATION) {
-            MaterialButton selector = new MaterialButton(requireContext());
+            MaterialButton selector = createDropdownButton();
             selector.setText(spec.label);
-            selector.setAllCaps(false);
             addFormView(parent, selector);
             input.multiButton = selector;
             input.inputView = selector;
@@ -1076,6 +1152,7 @@ public class ResourceFragment extends Fragment {
             TextInputEditText editText = new TextInputEditText(layout.getContext());
             editText.setSingleLine(spec.type != INPUT_DATETIME);
             editText.setInputType(inputType(spec.type));
+            editText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             editText.setTextColor(requireContext().getColor(R.color.auth_ink));
             editText.setMinHeight(getResources()
                     .getDimensionPixelSize(R.dimen.input_min_height));
@@ -1088,6 +1165,25 @@ public class ResourceFragment extends Fragment {
                         showDatePicker(editText, spec.type == INPUT_DATETIME));
             }
             layout.addView(editText);
+            editText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(
+                        CharSequence value,
+                        int start,
+                        int count,
+                        int after
+                ) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence value, int start, int before, int count) {
+                    layout.setError(null);
+                }
+
+                @Override
+                public void afterTextChanged(Editable value) {
+                }
+            });
             addFormView(parent, layout);
             input.editText = editText;
             input.inputView = layout;
@@ -1095,12 +1191,221 @@ public class ResourceFragment extends Fragment {
                 TextView balance = new TextView(requireContext());
                 balance.setText(R.string.sale_points_select_customer);
                 balance.setTextColor(requireContext().getColor(R.color.auth_muted));
-                balance.setTextSize(13);
+                balance.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                        / getResources().getDisplayMetrics().scaledDensity);
                 input.pointsBalanceView = balance;
                 addFormView(parent, balance);
             }
         }
         return input;
+    }
+
+    private MaterialButton createDropdownButton() {
+        MaterialButton button = new MaterialButton(requireContext());
+        button.setAllCaps(false);
+        button.setTextColor(requireContext().getColor(R.color.accent));
+        button.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
+        button.setBackgroundTintList(ColorStateList.valueOf(
+                requireContext().getColor(R.color.surface)));
+        button.setStrokeColor(ColorStateList.valueOf(requireContext().getColor(R.color.accent)));
+        button.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.card_stroke_width));
+        button.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.button_corner_radius));
+        button.setMinimumHeight(getResources().getDimensionPixelSize(R.dimen.touch_target_min));
+        button.setIconResource(R.drawable.ic_expand_more);
+        button.setIconTintResource(R.color.accent);
+        button.setIconSize(getResources().getDimensionPixelSize(R.dimen.space_3));
+        button.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_END);
+        button.setMaxLines(2);
+        button.setInsetTop(0);
+        button.setInsetBottom(0);
+        return button;
+    }
+
+    private void chooseRelationOption(FieldInput field) {
+        if (field.options.isEmpty()) {
+            showError(getString(R.string.entity_options_empty, field.spec.label));
+            return;
+        }
+
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext());
+        LinearLayout sheet = new LinearLayout(requireContext());
+        sheet.setOrientation(LinearLayout.VERTICAL);
+        int padding = getResources().getDimensionPixelSize(R.dimen.space_4);
+        sheet.setPadding(padding, padding, padding, padding);
+        int height = Math.min(
+                getResources().getDimensionPixelSize(R.dimen.entity_sheet_max_height),
+                getResources().getDisplayMetrics().heightPixels * 2 / 3);
+        sheet.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, height));
+
+        TextView title = new TextView(requireContext());
+        title.setText(field.spec.label);
+        title.setTextColor(requireContext().getColor(R.color.ink));
+        title.setTextSize(getResources().getDimension(R.dimen.section_title_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        addFormView(sheet, title);
+
+        TextInputLayout searchLayout = createOutlinedInput(getString(R.string.resource_search));
+        TextInputEditText search = new TextInputEditText(requireContext());
+        search.setSingleLine(true);
+        search.setInputType(InputType.TYPE_CLASS_TEXT);
+        search.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        searchLayout.addView(search);
+        addFormView(sheet, searchLayout);
+
+        ScrollView optionsScroll = new ScrollView(requireContext());
+        optionsScroll.setFillViewport(false);
+        LinearLayout optionsContainer = new LinearLayout(requireContext());
+        optionsContainer.setOrientation(LinearLayout.VERTICAL);
+        optionsScroll.addView(optionsContainer);
+        sheet.addView(optionsScroll, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
+
+        Runnable renderOptions = () -> {
+            optionsContainer.removeAllViews();
+            String query = search.getText() == null
+                    ? ""
+                    : search.getText().toString().trim().toLowerCase(Locale.ROOT);
+            int visibleCount = 0;
+            for (Option option : field.options) {
+                String searchable = (option.label + " " + optionSubtitle(option))
+                        .toLowerCase(Locale.ROOT);
+                if (!searchable.contains(query)) {
+                    continue;
+                }
+                addRelationOption(optionsContainer, field, option, dialog);
+                visibleCount++;
+            }
+            if (visibleCount == 0) {
+                TextView empty = new TextView(requireContext());
+                empty.setText(R.string.resource_empty);
+                empty.setTextColor(requireContext().getColor(R.color.muted_on_soft));
+                empty.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                        / getResources().getDisplayMetrics().scaledDensity);
+                empty.setGravity(Gravity.CENTER);
+                empty.setPadding(padding, padding, padding, padding);
+                optionsContainer.addView(empty);
+            }
+        };
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence value, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence value, int start, int before, int count) {
+                renderOptions.run();
+            }
+
+            @Override
+            public void afterTextChanged(Editable value) {
+            }
+        });
+        renderOptions.run();
+        dialog.setContentView(sheet);
+        dialog.show();
+    }
+
+    private void addRelationOption(
+            LinearLayout parent,
+            FieldInput field,
+            Option option,
+            BottomSheetDialog dialog
+    ) {
+        boolean selected = field.selectedOption != null
+                && field.selectedOption.id == option.id;
+        MaterialCardView card = new MaterialCardView(requireContext());
+        card.setCardBackgroundColor(requireContext().getColor(
+                selected ? R.color.soft : R.color.surface));
+        card.setRadius(getResources().getDimension(R.dimen.input_corner_radius));
+        card.setCardElevation(0);
+        card.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.card_stroke_width));
+        card.setStrokeColor(requireContext().getColor(
+                selected ? R.color.accent : R.color.line));
+        LinearLayout row = new LinearLayout(requireContext());
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        int padding = getResources().getDimensionPixelSize(R.dimen.space_3);
+        row.setPadding(padding, padding, padding, padding);
+
+        LinearLayout labels = new LinearLayout(requireContext());
+        labels.setOrientation(LinearLayout.VERTICAL);
+        TextView name = new TextView(requireContext());
+        name.setText(option.label);
+        name.setTextColor(requireContext().getColor(R.color.ink));
+        name.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
+        name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        labels.addView(name);
+        String subtitleText = optionSubtitle(option);
+        if (!subtitleText.isEmpty()) {
+            TextView subtitle = new TextView(requireContext());
+            subtitle.setText(subtitleText);
+            subtitle.setTextColor(requireContext().getColor(
+                    selected ? R.color.muted_on_soft : R.color.muted));
+            subtitle.setTextSize(getResources().getDimension(R.dimen.caption_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
+            labels.addView(subtitle);
+        }
+        row.addView(labels, new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+        if (selected) {
+            TextView check = new TextView(requireContext());
+            check.setText("✓");
+            check.setTextColor(requireContext().getColor(R.color.accent));
+            check.setTextSize(getResources().getDimension(R.dimen.brand_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
+            check.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            check.setContentDescription(getString(R.string.entity_selected));
+            row.addView(check);
+        }
+        card.addView(row);
+        card.setMinimumHeight(getResources()
+                .getDimensionPixelSize(R.dimen.touch_target_min));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.space_2);
+        parent.addView(card, params);
+        card.setClickable(true);
+        card.setFocusable(true);
+        card.setOnClickListener(ignored -> {
+            field.selectedOption = option;
+            updateRelationLabel(field);
+            updateCustomerPoints(field);
+            dialog.dismiss();
+        });
+    }
+
+    private String optionSubtitle(Option option) {
+        if (option.record == null) {
+            return "";
+        }
+        for (String key : new String[]{
+                "email", "telefono", "rol", "codigoBarras", "categoriaNombre",
+                "nivelLealtad", "numeroEmpleado", "numeroAdministrador", "descripcion"
+        }) {
+            String value = primitiveValue(option.record.get(key));
+            if (!value.isEmpty() && !value.equals(option.label)) {
+                return value;
+            }
+        }
+        return "";
+    }
+
+    private void updateRelationLabel(FieldInput field) {
+        if (field.relationButton == null) {
+            return;
+        }
+        field.relationButton.setTextColor(requireContext().getColor(R.color.accent));
+        field.relationButton.setStrokeColor(ColorStateList.valueOf(
+                requireContext().getColor(R.color.accent)));
+        field.relationButton.setText(field.selectedOption == null
+                ? getString(R.string.entity_select, field.spec.label)
+                : field.selectedOption.label);
     }
 
     private void configureSaleForm(
@@ -1368,6 +1673,12 @@ public class ResourceFragment extends Fragment {
                 case INPUT_RELATION:
                     if (input.selectedOption == null) {
                         if (spec.required) {
+                            if (input.relationButton != null) {
+                                input.relationButton.setTextColor(
+                                        requireContext().getColor(R.color.danger));
+                                input.relationButton.setStrokeColor(ColorStateList.valueOf(
+                                        requireContext().getColor(R.color.danger_border)));
+                            }
                             throw new IllegalArgumentException("Selecciona " + spec.label + ".");
                         }
                         request.add(spec.key, com.google.gson.JsonNull.INSTANCE);
@@ -1388,7 +1699,7 @@ public class ResourceFragment extends Fragment {
                             : input.editText.getText().toString().trim();
                     if (value.isEmpty()) {
                         if (spec.required) {
-                            input.editText.setError("Campo requerido");
+                            setFieldError(input, getString(R.string.form_required));
                             throw new IllegalArgumentException("Completa el campo " + spec.label + ".");
                         }
                         if (spec.type == INPUT_PASSWORD) {
@@ -1400,12 +1711,12 @@ public class ResourceFragment extends Fragment {
                     }
                     if (spec.type == INPUT_EMAIL
                             && !Patterns.EMAIL_ADDRESS.matcher(value).matches()) {
-                        input.editText.setError("Ingresa un correo válido");
+                        setFieldError(input, getString(R.string.form_invalid_email));
                         throw new IllegalArgumentException("Revisa el correo electrónico.");
                     }
                     if (spec.type == INPUT_PASSWORD
                             && (value.length() < 8 || value.length() > 20)) {
-                        input.editText.setError("Usa de 8 a 20 caracteres");
+                        setFieldError(input, getString(R.string.form_password_length));
                         throw new IllegalArgumentException(
                                 "La contraseña debe tener entre 8 y 20 caracteres.");
                     }
@@ -1427,12 +1738,26 @@ public class ResourceFragment extends Fragment {
                             request.addProperty(spec.key, value);
                         }
                     } catch (NumberFormatException error) {
-                        input.editText.setError("Ingresa un valor válido");
+                        setFieldError(input, getString(R.string.form_invalid_value));
                         throw new IllegalArgumentException("Revisa el campo " + spec.label + ".");
+                    } catch (IllegalArgumentException error) {
+                        setFieldError(input, error.getMessage());
+                        throw error;
                     }
             }
         }
         return request;
+    }
+
+    private void setFieldError(FieldInput input, String message) {
+        if (input.inputView instanceof TextInputLayout) {
+            ((TextInputLayout) input.inputView).setError(message);
+        } else if (input.editText != null) {
+            input.editText.setError(message);
+        }
+        if (input.editText != null) {
+            input.editText.requestFocus();
+        }
     }
 
     private void loadRelationOptions(FieldInput field, Long selectedId) {
@@ -1455,47 +1780,16 @@ public class ResourceFragment extends Fragment {
                                         object.get("id").getAsLong(), optionLabel(object), object));
                             }
                         }
-                        List<String> labels = new ArrayList<>();
-                        labels.add("Selecciona " + field.spec.label);
-                        for (Option option : field.options) {
-                            labels.add(option.label);
-                        }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                                android.R.layout.simple_spinner_item, labels);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        field.spinner.setAdapter(adapter);
                         field.selectedOption = null;
                         if (selectedId != null) {
-                            for (int i = 0; i < field.options.size(); i++) {
-                                if (field.options.get(i).id == selectedId) {
-                                    field.spinner.setSelection(i + 1);
-                                    field.selectedOption = field.options.get(i);
+                            for (Option option : field.options) {
+                                if (option.id == selectedId) {
+                                    field.selectedOption = option;
                                     break;
                                 }
                             }
                         }
-                        field.spinner.setOnItemSelectedListener(
-                                new android.widget.AdapterView.OnItemSelectedListener() {
-                                    @Override
-                                    public void onItemSelected(
-                                            android.widget.AdapterView<?> parent,
-                                            View view,
-                                            int position,
-                                            long id
-                                    ) {
-                                        field.selectedOption = position == 0
-                                                ? null : field.options.get(position - 1);
-                                        updateCustomerPoints(field);
-                                    }
-
-                                    @Override
-                                    public void onNothingSelected(
-                                            android.widget.AdapterView<?> parent
-                                    ) {
-                                        field.selectedOption = null;
-                                        updateCustomerPoints(field);
-                                    }
-                                });
+                        updateRelationLabel(field);
                         updateCustomerPoints(field);
                     }
 
@@ -1707,9 +2001,21 @@ public class ResourceFragment extends Fragment {
         TextInputLayout layout = new TextInputLayout(requireContext());
         layout.setHint(hint);
         layout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+        layout.setBoxStrokeWidth(getResources()
+                .getDimensionPixelSize(R.dimen.card_stroke_width));
         layout.setBoxStrokeWidthFocused(getResources()
                 .getDimensionPixelSize(R.dimen.input_focused_stroke_width));
         layout.setBoxBackgroundColor(requireContext().getColor(R.color.white));
+        ColorStateList stroke = ContextCompat.getColorStateList(
+                requireContext(), R.color.input_stroke);
+        if (stroke != null) {
+            layout.setBoxStrokeColorStateList(stroke);
+        }
+        ColorStateList hintColors = ContextCompat.getColorStateList(
+                requireContext(), R.color.input_hint);
+        if (hintColors != null) {
+            layout.setDefaultHintTextColor(hintColors);
+        }
         float radius = getResources().getDimension(R.dimen.input_corner_radius);
         layout.setBoxCornerRadii(radius, radius, radius, radius);
         return layout;
@@ -2626,6 +2932,7 @@ public class ResourceFragment extends Fragment {
         SwitchMaterial toggle;
         Spinner spinner;
         MaterialButton multiButton;
+        MaterialButton relationButton;
         View inputView;
         TextView pointsBalanceView;
         TextView dependentPointsView;

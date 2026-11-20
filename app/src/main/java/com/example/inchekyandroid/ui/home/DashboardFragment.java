@@ -1,10 +1,14 @@
 package com.example.inchekyandroid.ui.home;
 
 import android.os.Bundle;
+import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,58 +89,189 @@ public class DashboardFragment extends Fragment {
 
     private void renderResources(List<ApiResource> resources) {
         binding.dashboardResources.removeAllViews();
+        binding.dashboardResources.setColumnCount(2);
+        ApiResource sales = findCreatableSalesResource(resources);
+        if (sales != null) {
+            addDashboardCard(sales, true);
+        }
         if (resources.isEmpty()) {
             TextView empty = new TextView(requireContext());
             empty.setText(R.string.home_no_features);
-            empty.setTextColor(requireContext().getColor(R.color.auth_muted));
-            binding.dashboardResources.addView(empty);
+            empty.setTextColor(requireContext().getColor(R.color.muted_on_soft));
+            empty.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                    / getResources().getDisplayMetrics().scaledDensity);
+            GridLayout.LayoutParams params = new GridLayout.LayoutParams(
+                    GridLayout.spec(GridLayout.UNDEFINED),
+                    GridLayout.spec(GridLayout.UNDEFINED, 2, 1f));
+            params.width = 0;
+            binding.dashboardResources.addView(empty, params);
             return;
         }
         for (ApiResource resource : resources) {
-            MaterialCardView card = new MaterialCardView(requireContext());
-            card.setCardBackgroundColor(requireContext().getColor(R.color.white));
-            card.setRadius(getResources().getDimension(R.dimen.auth_card_radius));
-            card.setCardElevation(getResources().getDimension(R.dimen.auth_card_elevation));
-            card.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.card_stroke_width));
-            card.setStrokeColor(requireContext().getColor(R.color.card_outline));
-            android.widget.LinearLayout wrapper = new android.widget.LinearLayout(requireContext());
-            wrapper.setGravity(android.view.Gravity.CENTER_VERTICAL);
-            wrapper.setOrientation(android.widget.LinearLayout.HORIZONTAL);
-            wrapper.setPadding(16, 8, 16, 8);
-            ImageView icon = new ImageView(requireContext());
-            icon.setImageResource(resourceIcon(resource.key));
-            icon.setColorFilter(requireContext().getColor(R.color.auth_primary));
-            icon.setContentDescription(resource.title);
-            int iconSize = getResources().getDimensionPixelSize(R.dimen.dashboard_icon_size);
-            android.widget.LinearLayout.LayoutParams iconParams =
-                    new android.widget.LinearLayout.LayoutParams(iconSize, iconSize);
-            iconParams.setMarginEnd(getResources()
-                    .getDimensionPixelSize(R.dimen.auth_card_spacing));
-            wrapper.addView(icon, iconParams);
-            TextView title = new TextView(requireContext());
-            title.setText(resource.title);
-            title.setTextColor(requireContext().getColor(R.color.auth_ink));
-            title.setTextSize(17);
-            title.setPadding(0, 16, 8, 16);
-            title.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
-                    0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-            wrapper.addView(title);
-            card.addView(wrapper);
-            card.setOnClickListener(ignored -> {
-                Bundle args = new Bundle();
-                args.putString("resource", resource.key);
-                NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_dashboard_to_resource, args);
-            });
-            android.widget.LinearLayout.LayoutParams params =
-                    new android.widget.LinearLayout.LayoutParams(
-                            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-                    );
-            params.bottomMargin = getResources()
-                    .getDimensionPixelSize(R.dimen.auth_card_spacing);
-            binding.dashboardResources.addView(card, params);
+            addDashboardCard(resource, false);
         }
+    }
+
+    private ApiResource findCreatableSalesResource(List<ApiResource> resources) {
+        for (ApiResource resource : resources) {
+            if ("ventas".equals(resource.key) && resource.canCreate) {
+                return resource;
+            }
+        }
+        return null;
+    }
+
+    private void addDashboardCard(ApiResource resource, boolean featured) {
+        MaterialCardView card = new MaterialCardView(requireContext());
+        int cardColor = requireContext().getColor(
+                featured ? R.color.featured_start : R.color.surface);
+        card.setCardBackgroundColor(cardColor);
+        card.setRadius(getResources().getDimension(R.dimen.card_corner_radius));
+        card.setCardElevation(getResources().getDimension(R.dimen.card_elevation));
+        card.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.card_stroke_width));
+        card.setStrokeColor(requireContext().getColor(
+                featured ? R.color.featured_border : R.color.line));
+        card.setMinimumHeight(getResources().getDimensionPixelSize(
+                featured ? R.dimen.dashboard_featured_min_height
+                        : R.dimen.dashboard_card_min_height));
+
+        LinearLayout content = new LinearLayout(requireContext());
+        content.setOrientation(featured ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
+        content.setGravity(featured ? Gravity.CENTER_VERTICAL : Gravity.TOP);
+        int padding = getResources().getDimensionPixelSize(R.dimen.space_4);
+        content.setPadding(padding, padding, padding, padding);
+        if (featured) {
+            content.setBackgroundResource(R.drawable.featured_card_background);
+            addFeaturedIcon(content, resource);
+        } else {
+            addResourceIcon(content, resource);
+        }
+
+        LinearLayout labels = new LinearLayout(requireContext());
+        labels.setOrientation(LinearLayout.VERTICAL);
+        if (featured) {
+            LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
+                    0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+            labelParams.setMarginStart(getResources()
+                    .getDimensionPixelSize(R.dimen.space_3));
+            labels.setLayoutParams(labelParams);
+        } else {
+            LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            labelParams.topMargin = getResources()
+                    .getDimensionPixelSize(R.dimen.space_2);
+            labels.setLayoutParams(labelParams);
+        }
+
+        TextView title = new TextView(requireContext());
+        if (featured) {
+            title.setText(R.string.home_create_ticket);
+        } else {
+            title.setText(resource.title);
+        }
+        title.setTextColor(requireContext().getColor(R.color.ink));
+        title.setTextSize(getResources().getDimension(R.dimen.card_title_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        title.setMaxLines(2);
+        labels.addView(title);
+
+        TextView description = new TextView(requireContext());
+        description.setText(featured
+                ? R.string.home_create_ticket_description
+                : resourceDescription(resource.key));
+        description.setTextColor(requireContext().getColor(
+                featured ? R.color.muted_on_line : R.color.muted));
+        description.setTextSize(getResources().getDimension(R.dimen.body_text_size)
+                / getResources().getDisplayMetrics().scaledDensity);
+        description.setMaxLines(3);
+        LinearLayout.LayoutParams descriptionParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        descriptionParams.topMargin = getResources()
+                .getDimensionPixelSize(R.dimen.space_1);
+        labels.addView(description, descriptionParams);
+        content.addView(labels);
+        card.addView(content);
+        card.setContentDescription(featured
+                ? getString(R.string.home_create_ticket)
+                : resource.title);
+        card.setClickable(true);
+        card.setFocusable(true);
+        card.setOnClickListener(ignored -> openResource(resource.key, featured));
+
+        GridLayout.Spec rowSpec = GridLayout.spec(GridLayout.UNDEFINED);
+        GridLayout.Spec columnSpec = featured
+                ? GridLayout.spec(GridLayout.UNDEFINED, 2, 1f)
+                : GridLayout.spec(GridLayout.UNDEFINED, 1, 1f);
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
+        params.width = 0;
+        params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int gap = getResources().getDimensionPixelSize(R.dimen.space_1);
+        params.setMargins(gap, gap, gap, gap);
+        binding.dashboardResources.addView(card, params);
+    }
+
+    private void addFeaturedIcon(LinearLayout parent, ApiResource resource) {
+        int size = getResources().getDimensionPixelSize(R.dimen.dashboard_feature_icon_box_size);
+        android.widget.FrameLayout iconBox = new android.widget.FrameLayout(requireContext());
+        iconBox.setBackgroundResource(R.drawable.featured_icon_background);
+        ImageView icon = new ImageView(requireContext());
+        icon.setImageResource(resourceIcon(resource.key));
+        icon.setColorFilter(requireContext().getColor(R.color.success));
+        icon.setContentDescription(getString(R.string.home_create_ticket));
+        int iconSize = getResources().getDimensionPixelSize(R.dimen.dashboard_icon_size);
+        android.widget.FrameLayout.LayoutParams iconParams =
+                new android.widget.FrameLayout.LayoutParams(iconSize, iconSize, Gravity.CENTER);
+        iconBox.addView(icon, iconParams);
+        parent.addView(iconBox, new LinearLayout.LayoutParams(size, size));
+    }
+
+    private void addResourceIcon(LinearLayout parent, ApiResource resource) {
+        int iconSize = getResources().getDimensionPixelSize(R.dimen.dashboard_icon_size);
+        ImageView icon = new ImageView(requireContext());
+        icon.setImageResource(resourceIcon(resource.key));
+        icon.setColorFilter(requireContext().getColor(R.color.accent));
+        icon.setContentDescription(resource.title);
+        parent.addView(icon, new LinearLayout.LayoutParams(iconSize, iconSize));
+    }
+
+    private int resourceDescription(String key) {
+        switch (key) {
+            case "catalogo":
+                return R.string.dashboard_catalog_description;
+            case "productos":
+                return R.string.dashboard_products_description;
+            case "clientes":
+                return R.string.dashboard_clients_description;
+            case "proveedores":
+                return R.string.dashboard_providers_description;
+            case "abastecimientos":
+                return R.string.dashboard_supplies_description;
+            case "promociones":
+                return R.string.dashboard_promotions_description;
+            case "ventas":
+                return R.string.dashboard_sales_description;
+            case "compras":
+                return R.string.dashboard_purchases_description;
+            case "cajeros":
+                return R.string.dashboard_cashiers_description;
+            case "administradores":
+                return R.string.dashboard_admins_description;
+            case "usuarios":
+                return R.string.dashboard_users_description;
+            default:
+                return R.string.home_no_features;
+        }
+    }
+
+    private void openResource(String resourceKey, boolean createOnOpen) {
+        Bundle args = new Bundle();
+        args.putString("resource", resourceKey);
+        args.putBoolean("createOnOpen", createOnOpen);
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_dashboard_to_resource, args);
     }
 
     private int resourceIcon(String key) {

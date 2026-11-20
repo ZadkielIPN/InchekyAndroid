@@ -36,6 +36,19 @@
     <string name="home_profile">Mi perfil</string>
     <string name="home_logout">Cerrar sesión</string>
     <string name="home_no_features">No hay funciones disponibles para este rol.</string>
+    <string name="home_create_ticket">Crear ticket</string>
+    <string name="home_create_ticket_description">Agrega productos y registra una venta.</string>
+    <string name="dashboard_catalog_description">Busca productos disponibles para comprar.</string>
+    <string name="dashboard_products_description">Gestiona el catálogo y las existencias.</string>
+    <string name="dashboard_clients_description">Consulta y administra clientes.</string>
+    <string name="dashboard_providers_description">Consulta los datos de proveedores.</string>
+    <string name="dashboard_supplies_description">Consulta los abastecimientos registrados.</string>
+    <string name="dashboard_promotions_description">Consulta promociones vigentes.</string>
+    <string name="dashboard_sales_description">Consulta ventas y tickets registrados.</string>
+    <string name="dashboard_purchases_description">Consulta tus compras y tickets.</string>
+    <string name="dashboard_cashiers_description">Administra usuarios de caja.</string>
+    <string name="dashboard_admins_description">Administra cuentas administrativas.</string>
+    <string name="dashboard_users_description">Consulta y administra usuarios.</string>
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_customer_home">Inicio</string>
     <string name="menu_open">Abrir navegación</string>
@@ -56,6 +69,14 @@
     <string name="resource_search_action_description">Buscar registros</string>
     <string name="catalog_product_image">Imagen del producto</string>
     <string name="resource_create">Crear registro</string>
+    <string name="resource_save">Guardar</string>
+    <string name="form_required">Completa este campo.</string>
+    <string name="form_invalid_email">Ingresa un correo electrónico válido.</string>
+    <string name="form_password_length">La contraseña debe tener entre 8 y 20 caracteres.</string>
+    <string name="form_invalid_value">Ingresa un valor válido.</string>
+    <string name="entity_select">Selecciona %1$s</string>
+    <string name="entity_options_empty">No hay opciones disponibles para %1$s.</string>
+    <string name="entity_selected">Seleccionado</string>
     <string name="resource_choose_image">Seleccionar imagen para el producto</string>
     <string name="resource_previous">Anterior</string>
     <string name="resource_next">Siguiente</string>
@@ -108,7 +129,12 @@
     <string name="resource_email_hint">Correo destinatario</string>
     <string name="profile_new_password">Nueva contraseña (opcional)</string>
     <string name="profile_required">Completa nombre, apellido y correo.</string>
+    <string name="profile_name_required">Ingresa tu nombre.</string>
+    <string name="profile_surname_required">Ingresa tu apellido.</string>
+    <string name="profile_email_required">Ingresa tu correo electrónico.</string>
+    <string name="profile_email_invalid">Ingresa un correo electrónico válido.</string>
     <string name="profile_password_length">La nueva contraseña debe tener entre 8 y 20 caracteres.</string>
     <string name="profile_saved">Perfil actualizado.</string>
     <string name="profile_save">Guardar cambios</string>
+    <string name="profile_saving">Guardando...</string>
 </resources>

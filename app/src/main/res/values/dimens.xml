@@ -24,6 +24,7 @@
     <dimen name="brand_text_size">20sp</dimen>
     <dimen name="screen_title_text_size">24sp</dimen>
     <dimen name="section_title_text_size">22sp</dimen>
+    <dimen name="detail_header_text_size">18sp</dimen>
     <dimen name="body_text_size">14sp</dimen>
     <dimen name="caption_text_size">12sp</dimen>
     <dimen name="card_title_text_size">16sp</dimen>
@@ -35,6 +36,10 @@
     <dimen name="auth_login_logo_size">128dp</dimen>
     <dimen name="auth_register_logo_size">112dp</dimen>
     <dimen name="auth_progress_size">20dp</dimen>
+    <dimen name="dashboard_card_min_height">128dp</dimen>
+    <dimen name="dashboard_featured_min_height">88dp</dimen>
+    <dimen name="dashboard_feature_icon_box_size">48dp</dimen>
+    <dimen name="entity_sheet_max_height">440dp</dimen>
 
     <!-- Compatibility aliases for existing screens. -->
     <dimen name="auth_card_radius">@dimen/card_corner_radius</dimen>

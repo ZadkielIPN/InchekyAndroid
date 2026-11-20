@@ -1,9 +1,13 @@
 package com.example.inchekyandroid.ui.home;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.inchekyandroid.R;
 import com.example.inchekyandroid.data.remote.RetrofitClient;
 import com.example.inchekyandroid.databinding.ActivityProfileBinding;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class ProfileFragment extends Fragment {
     private ActivityProfileBinding binding;
@@ -36,8 +41,52 @@ public class ProfileFragment extends Fragment {
         binding.btnProfileBack.setOnClickListener(ignored ->
                 NavHostFragment.findNavController(this).popBackStack());
         binding.btnProfileSave.setOnClickListener(ignored -> submitProfile());
+        binding.etProfileName.setOnEditorActionListener((text, actionId, event) ->
+                focusNext(binding.etProfileSurname, actionId));
+        binding.etProfileSurname.setOnEditorActionListener((text, actionId, event) ->
+                focusNext(binding.etProfileEmail, actionId));
+        binding.etProfileEmail.setOnEditorActionListener((text, actionId, event) ->
+                focusNext(binding.etProfilePassword, actionId));
+        binding.etProfilePassword.setOnEditorActionListener((text, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                submitProfile();
+                return true;
+            }
+            return false;
+        });
+        binding.etProfileName.addTextChangedListener(clearErrorOnChange(binding.tilProfileName));
+        binding.etProfileSurname.addTextChangedListener(
+                clearErrorOnChange(binding.tilProfileSurname));
+        binding.etProfileEmail.addTextChangedListener(clearErrorOnChange(binding.tilProfileEmail));
+        binding.etProfilePassword.addTextChangedListener(
+                clearErrorOnChange(binding.tilProfilePassword));
         observeState();
         viewModel.loadProfile();
+    }
+
+    private boolean focusNext(View next, int actionId) {
+        if (actionId != EditorInfo.IME_ACTION_NEXT) {
+            return false;
+        }
+        next.requestFocus();
+        return true;
+    }
+
+    private TextWatcher clearErrorOnChange(TextInputLayout input) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence value, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence value, int start, int before, int count) {
+                input.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable value) {
+            }
+        };
     }
 
     private void observeState() {
@@ -61,23 +110,70 @@ public class ProfileFragment extends Fragment {
                 showFeedback(message, true);
             }
         });
-        viewModel.getLoading().observe(getViewLifecycleOwner(), loading ->
-                binding.btnProfileSave.setEnabled(!loading));
+        viewModel.getLoading().observe(getViewLifecycleOwner(), loading -> {
+            boolean isLoading = Boolean.TRUE.equals(loading);
+            binding.btnProfileSave.setEnabled(!isLoading);
+            binding.btnProfileSave.setText(
+                    isLoading ? R.string.profile_saving : R.string.profile_save);
+            binding.profileProgress.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        });
     }
 
     private void submitProfile() {
+        binding.tilProfileName.setError(null);
+        binding.tilProfileSurname.setError(null);
+        binding.tilProfileEmail.setError(null);
+        binding.tilProfilePassword.setError(null);
+        binding.tvProfileFeedback.setVisibility(View.GONE);
+        String name = textOf(binding.etProfileName.getText()).trim();
+        String surname = textOf(binding.etProfileSurname.getText()).trim();
+        String email = textOf(binding.etProfileEmail.getText()).trim();
+        String password = textOf(binding.etProfilePassword.getText());
+        if (name.isEmpty()) {
+            showFieldError(binding.tilProfileName, binding.etProfileName,
+                    R.string.profile_name_required);
+            return;
+        }
+        if (surname.isEmpty()) {
+            showFieldError(binding.tilProfileSurname, binding.etProfileSurname,
+                    R.string.profile_surname_required);
+            return;
+        }
+        if (email.isEmpty()) {
+            showFieldError(binding.tilProfileEmail, binding.etProfileEmail,
+                    R.string.profile_email_required);
+            return;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            showFieldError(binding.tilProfileEmail, binding.etProfileEmail,
+                    R.string.profile_email_invalid);
+            return;
+        }
+        if (!password.isEmpty() && (password.length() < 8 || password.length() > 20)) {
+            showFieldError(binding.tilProfilePassword, binding.etProfilePassword,
+                    R.string.profile_password_length);
+            return;
+        }
         viewModel.updateProfile(
-                textOf(binding.etProfileName.getText()),
-                textOf(binding.etProfileSurname.getText()),
-                textOf(binding.etProfileEmail.getText()),
-                textOf(binding.etProfilePassword.getText())
+                name,
+                surname,
+                email,
+                password
         );
+    }
+
+    private void showFieldError(TextInputLayout input, View field, int message) {
+        input.setError(getString(message));
+        field.requestFocus();
     }
 
     private void showFeedback(String message, boolean success) {
         binding.tvProfileFeedback.setText(message);
         binding.tvProfileFeedback.setTextColor(requireContext().getColor(
-                success ? R.color.auth_success : R.color.auth_error));
+                success ? R.color.success_notice_text : R.color.danger));
+        binding.tvProfileFeedback.setBackgroundResource(success
+                ? R.drawable.success_notice_background
+                : R.drawable.error_notice_background);
         binding.tvProfileFeedback.setVisibility(View.VISIBLE);
     }
 

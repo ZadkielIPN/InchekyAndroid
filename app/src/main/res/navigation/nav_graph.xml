@@ -72,5 +72,9 @@
         <argument
             android:name="resource"
             app:argType="string" />
+        <argument
+            android:name="createOnOpen"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
 </navigation>

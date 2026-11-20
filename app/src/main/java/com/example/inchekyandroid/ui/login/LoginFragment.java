@@ -12,8 +12,6 @@ import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -63,25 +61,8 @@ public class LoginFragment extends Fragment {
         });
         binding.etEmail.addTextChangedListener(clearErrorOnChange(binding.tilEmail));
         binding.etPassword.addTextChangedListener(clearErrorOnChange(binding.tilPassword));
-        applyKeyboardInsets();
         observeLoginState();
         restoreAuthenticatedSession();
-    }
-
-    private void applyKeyboardInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.authScroll, (scroll, insets) -> {
-            int imeBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
-            int systemBottom = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom;
-            int keyboardPadding = Math.max(0, imeBottom - systemBottom);
-            scroll.setPadding(
-                    scroll.getPaddingLeft(),
-                    scroll.getPaddingTop(),
-                    scroll.getPaddingRight(),
-                    keyboardPadding
-            );
-            return insets;
-        });
-        ViewCompat.requestApplyInsets(binding.authScroll);
     }
 
     private TextWatcher clearErrorOnChange(com.google.android.material.textfield.TextInputLayout input) {
