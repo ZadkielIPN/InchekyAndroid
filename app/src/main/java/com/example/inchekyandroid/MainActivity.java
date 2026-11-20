@@ -19,6 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.inchekyandroid.data.model.UsuarioResponse;
 import com.example.inchekyandroid.data.remote.RetrofitClient;
@@ -60,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityHostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        navController = Navigation.findNavController(this, R.id.nav_host);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host);
+        navController = navHostFragment.getNavController();
         configureToolbar();
         binding.drawerNavigation.setNavigationItemSelectedListener(this::onMenuItemSelected);
         binding.btnDrawerLogout.setOnClickListener(ignored -> logout());
