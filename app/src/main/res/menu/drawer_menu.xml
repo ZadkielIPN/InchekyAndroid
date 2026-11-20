@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menuDashboard"
+            android:icon="@drawable/ic_dashboard"
+            android:title="@string/menu_dashboard" />
+        <item
+            android:id="@+id/menuProducts"
+            android:icon="@drawable/ic_box_seam"
+            android:title="@string/menu_products" />
+        <item
+            android:id="@+id/menuProviders"
+            android:icon="@drawable/ic_truck"
+            android:title="@string/menu_providers" />
+        <item
+            android:id="@+id/menuClients"
+            android:icon="@drawable/ic_people"
+            android:title="@string/menu_clients" />
+        <item
+            android:id="@+id/menuUsers"
+            android:icon="@drawable/ic_person_circle"
+            android:title="@string/menu_users" />
+        <item
+            android:id="@+id/menuCashiers"
+            android:icon="@drawable/ic_person_badge"
+            android:title="@string/menu_cashiers" />
+        <item
+            android:id="@+id/menuAdmins"
+            android:icon="@drawable/ic_person_gear"
+            android:title="@string/menu_admins" />
+        <item
+            android:id="@+id/menuPromotions"
+            android:icon="@drawable/ic_percent"
+            android:title="@string/menu_promotions" />
+        <item
+            android:id="@+id/menuSales"
+            android:icon="@drawable/ic_receipt"
+            android:title="@string/menu_sales" />
+        <item
+            android:id="@+id/menuSupplies"
+            android:icon="@drawable/ic_boxes"
+            android:title="@string/menu_supplies" />
+    </group>
+    <group
+        android:id="@+id/menuCustomerGroup"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/menuProfile"
+            android:icon="@drawable/ic_person_circle"
+            android:title="@string/home_profile" />
+        <item
+            android:id="@+id/menuPurchases"
+            android:icon="@drawable/ic_receipt"
+            android:title="@string/menu_purchases" />
+    </group>
+</menu>

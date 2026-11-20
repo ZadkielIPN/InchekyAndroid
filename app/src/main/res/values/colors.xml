@@ -18,6 +18,7 @@
     <color name="chip_text">#1D4ED8</color>
     <color name="input_border">#CBD5E1</color>
     <color name="input_halo">#331D4ED8</color>
+    <color name="topbar_user_border">#BFDBFE</color>
     <color name="danger">#B91C1C</color>
     <color name="danger_border">#FCA5A5</color>
     <color name="danger_pressed">#FEF2F2</color>

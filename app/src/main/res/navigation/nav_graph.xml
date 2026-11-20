@@ -10,6 +10,14 @@
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
 
+    <action
+        android:id="@+id/action_global_resource"
+        app:destination="@id/resourceFragment" />
+
+    <action
+        android:id="@+id/action_global_profile"
+        app:destination="@id/profileFragment" />
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.inchekyandroid.ui.login.LoginFragment"

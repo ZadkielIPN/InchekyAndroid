@@ -13,4 +13,10 @@ public class UsuarioResponse {
     private String apellido;
     private String email;
     private String rol;
+
+    public String getNombreCompleto() {
+        String fullName = ((nombre == null ? "" : nombre) + " "
+                + (apellido == null ? "" : apellido)).trim();
+        return fullName.isEmpty() ? email : fullName;
+    }
 }
