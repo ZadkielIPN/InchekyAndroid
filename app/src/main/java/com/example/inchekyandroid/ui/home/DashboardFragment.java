@@ -199,7 +199,14 @@ public class DashboardFragment extends Fragment {
                 : resource.title);
         card.setClickable(true);
         card.setFocusable(true);
-        card.setOnClickListener(ignored -> openResource(resource.key, featured));
+        card.setOnClickListener(ignored -> {
+            if (featured) {
+                NavHostFragment.findNavController(this)
+                        .navigate(R.id.action_dashboard_to_sale);
+            } else {
+                openResource(resource.key);
+            }
+        });
 
         GridLayout.Spec rowSpec = GridLayout.spec(GridLayout.UNDEFINED);
         GridLayout.Spec columnSpec = featured
@@ -266,10 +273,9 @@ public class DashboardFragment extends Fragment {
         }
     }
 
-    private void openResource(String resourceKey, boolean createOnOpen) {
+    private void openResource(String resourceKey) {
         Bundle args = new Bundle();
         args.putString("resource", resourceKey);
-        args.putBoolean("createOnOpen", createOnOpen);
         NavHostFragment.findNavController(this)
                 .navigate(R.id.action_dashboard_to_resource, args);
     }

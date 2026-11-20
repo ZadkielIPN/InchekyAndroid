@@ -77,6 +77,65 @@
     <string name="entity_select">Selecciona %1$s</string>
     <string name="entity_options_empty">No hay opciones disponibles para %1$s.</string>
     <string name="entity_selected">Seleccionado</string>
+    <string name="sale_catalog_hint">Toca un producto para agregarlo al ticket.</string>
+    <string name="sale_search_products">Buscar productos</string>
+    <string name="sale_loading_products">Cargando catálogo…</string>
+    <string name="sale_catalog_error">No se pudo cargar el catálogo.</string>
+    <string name="sale_retry_catalog">Reintentar</string>
+    <string name="sale_no_products">No hay productos disponibles con existencias.</string>
+    <string name="sale_add_product">Agregar %1$s al ticket, %2$s</string>
+    <string name="sale_view_ticket">Ver ticket (%1$d) · %2$s</string>
+    <string name="sale_ticket_summary">Resumen del ticket</string>
+    <string name="sale_empty_ticket">Agrega productos desde el catálogo.</string>
+    <string name="sale_select_customer">Selecciona un cliente</string>
+    <string name="sale_select_cashier">Selecciona un cajero</string>
+    <string name="sale_cashier_self">Cajero: %1$s</string>
+    <string name="sale_points_label">Puntos utilizados</string>
+    <string name="sale_payment_method">Método de pago</string>
+    <string name="sale_cash_received">Efectivo recibido</string>
+    <string name="sale_confirm">Confirmar ticket</string>
+    <string name="sale_remove_line">Quitar</string>
+    <string name="sale_quantity">Cantidad</string>
+    <string name="sale_increase_quantity">Aumentar cantidad</string>
+    <string name="sale_decrease_quantity">Disminuir cantidad</string>
+    <string name="sale_select_entity">Selecciona %1$s.</string>
+    <string name="sale_stock_limit">La cantidad no puede superar las existencias (%1$d).</string>
+    <string name="sale_quantity_invalid">Ingresa una cantidad válida.</string>
+    <string name="sale_customer_required">Selecciona un cliente para continuar.</string>
+    <string name="sale_cashier_required">Selecciona un cajero para continuar.</string>
+    <string name="sale_points_invalid">Los puntos no pueden superar el máximo aplicable (%1$d).</string>
+    <string name="sale_cash_invalid">Ingresa un monto válido de efectivo recibido.</string>
+    <string name="sale_cash_short">El efectivo recibido no cubre el total de %1$s.</string>
+    <string name="sale_created_message">Venta registrada. Total: %1$s</string>
+    <string name="sale_missing_id">La venta se registró, pero el servidor no devolvió el identificador del ticket.</string>
+    <string name="sale_print">Imprimir</string>
+    <string name="sale_print_unavailable">La impresión estará disponible próximamente.</string>
+    <string name="sale_email_invalid">Ingresa un correo electrónico válido.</string>
+    <string name="sale_payment_cash">Efectivo</string>
+    <string name="sale_payment_card">Tarjeta</string>
+    <string name="sale_payment_transfer">Transferencia</string>
+    <string name="sale_payment_other">Otro</string>
+    <string name="sale_product_category_fallback">Sin categoría</string>
+    <string name="sale_submitting">Registrando venta…</string>
+    <string name="sale_catalog_no_results">No hay productos que coincidan con la búsqueda.</string>
+    <string name="sale_customer_options_error">No se pudieron cargar los clientes.</string>
+    <string name="sale_cashier_options_error">No se pudieron cargar los cajeros.</string>
+    <string name="sale_options_loading">Cargando opciones…</string>
+    <string name="sale_ticket_registered">Venta registrada correctamente.</string>
+    <string name="sale_email_sent">Ticket enviado al correo indicado.</string>
+    <string name="sale_ticket_actions_title">Venta registrada</string>
+    <string name="sale_action_done">Listo</string>
+    <string name="sale_label_subtotal">Subtotal</string>
+    <string name="sale_label_promotions">Promociones</string>
+    <string name="sale_label_loyalty">Descuento por nivel</string>
+    <string name="sale_label_points">Descuento por puntos</string>
+    <string name="sale_label_total">Total</string>
+    <string-array name="sale_payment_methods">
+        <item>Efectivo</item>
+        <item>Tarjeta</item>
+        <item>Transferencia</item>
+        <item>Otro</item>
+    </string-array>
     <string name="resource_choose_image">Seleccionar imagen para el producto</string>
     <string name="resource_previous">Anterior</string>
     <string name="resource_next">Siguiente</string>

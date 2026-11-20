@@ -109,7 +109,6 @@ public class ResourceFragment extends Fragment {
     private File selectedImage;
     private String selectedImageMimeType;
     private boolean productUploadInProgress;
-    private boolean createFormOnLoad;
     private ActivityResultLauncher<String> imagePicker;
     private final Handler searchHandler = new Handler(Looper.getMainLooper());
     private Runnable searchTask;
@@ -137,8 +136,6 @@ public class ResourceFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this).get(ResourceViewModel.class);
-        createFormOnLoad = savedInstanceState == null && getArguments() != null
-                && getArguments().getBoolean("createOnOpen", false);
         observeRecords();
         binding.btnResourceCreate.setEnabled(false);
         binding.btnResourceImage.setEnabled(false);
@@ -174,7 +171,14 @@ public class ResourceFragment extends Fragment {
             public void afterTextChanged(Editable value) {
             }
         });
-        binding.btnResourceCreate.setOnClickListener(ignored -> showEditor(null, 0));
+        binding.btnResourceCreate.setOnClickListener(ignored -> {
+            if (resource != null && "ventas".equals(resource.key)) {
+                NavHostFragment.findNavController(this)
+                        .navigate(R.id.action_resource_to_sale);
+            } else {
+                showEditor(null, 0);
+            }
+        });
         binding.btnResourceImage.setOnClickListener(ignored -> imagePicker.launch("image/*"));
         binding.btnPreviousPage.setOnClickListener(ignored -> {
             if (page > 0) {
@@ -208,10 +212,6 @@ public class ResourceFragment extends Fragment {
                     return;
                 }
                 configureScreen();
-                if (createFormOnLoad) {
-                    createFormOnLoad = false;
-                    showEditor(null, 0);
-                }
                 loadRecords();
             }
 

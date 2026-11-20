@@ -31,6 +31,7 @@
     <color name="success_notice_text">#047857</color>
     <color name="featured_border">#86EFAC</color>
     <color name="featured_start">#F0FDF4</color>
+    <color name="pos_price">#166534</color>
     <color name="auth_gradient_start">#DBEAFE</color>
     <color name="auth_gradient_center">#EFF6FF</color>
     <color name="auth_gradient_end">#FFFFFF</color>

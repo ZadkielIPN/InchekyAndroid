@@ -40,6 +40,11 @@
     <dimen name="dashboard_featured_min_height">88dp</dimen>
     <dimen name="dashboard_feature_icon_box_size">48dp</dimen>
     <dimen name="entity_sheet_max_height">440dp</dimen>
+    <dimen name="pos_product_card_min_height">152dp</dimen>
+    <dimen name="pos_catalog_icon_box_size">44dp</dimen>
+    <dimen name="pos_sheet_max_height">720dp</dimen>
+    <dimen name="pos_total_text_size">22sp</dimen>
+    <dimen name="pos_quantity_input_width">64dp</dimen>
 
     <!-- Compatibility aliases for existing screens. -->
     <dimen name="auth_card_radius">@dimen/card_corner_radius</dimen>

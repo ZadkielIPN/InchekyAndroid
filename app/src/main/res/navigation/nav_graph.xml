@@ -54,6 +54,9 @@
             android:id="@+id/action_dashboard_to_resource"
             app:destination="@id/resourceFragment" />
         <action
+            android:id="@+id/action_dashboard_to_sale"
+            app:destination="@id/saleFragment" />
+        <action
             android:id="@+id/action_dashboard_to_login"
             app:destination="@id/loginFragment"
             app:popUpTo="@id/nav_graph"
@@ -72,9 +75,13 @@
         <argument
             android:name="resource"
             app:argType="string" />
-        <argument
-            android:name="createOnOpen"
-            android:defaultValue="false"
-            app:argType="boolean" />
+        <action
+            android:id="@+id/action_resource_to_sale"
+            app:destination="@id/saleFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/saleFragment"
+        android:name="com.example.inchekyandroid.ui.home.SaleFragment"
+        android:label="@string/home_create_ticket" />
 </navigation>

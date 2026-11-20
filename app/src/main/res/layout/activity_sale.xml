@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/saleRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/soft">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilProductSearch"
+        style="@style/Widget.Incheky.TextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/space_3"
+        android:layout_marginEnd="@dimen/screen_margin"
+        android:hint="@string/sale_search_products"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/muted"
+        app:startIconDrawable="@drawable/ic_search"
+        app:startIconTint="@color/muted"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etProductSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tvSaleCatalogHint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/space_2"
+        android:layout_marginEnd="@dimen/screen_margin"
+        android:text="@string/sale_catalog_hint"
+        android:textColor="@color/muted_on_soft"
+        android:textSize="@dimen/body_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tilProductSearch" />
+
+    <LinearLayout
+        android:id="@+id/saleNoticeContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/space_2"
+        android:layout_marginEnd="@dimen/screen_margin"
+        android:background="@drawable/error_notice_background"
+        android:orientation="vertical"
+        android:padding="@dimen/space_3"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSaleCatalogHint">
+
+        <TextView
+            android:id="@+id/tvSaleNotice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/danger"
+            android:textSize="@dimen/body_text_size" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRetryCatalog"
+            style="@style/Widget.Incheky.Button.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/touch_target_min"
+            android:layout_marginTop="@dimen/space_2"
+            android:text="@string/sale_retry_catalog"
+            android:textSize="@dimen/body_text_size"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/saleProductScroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingStart="@dimen/space_3"
+        android:paddingTop="@dimen/space_2"
+        android:paddingEnd="@dimen/space_3"
+        android:paddingBottom="@dimen/space_3"
+        app:layout_constraintBottom_toTopOf="@id/saleBottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/saleNoticeContainer">
+
+        <GridLayout
+            android:id="@+id/saleProducts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="horizontal"
+            android:useDefaultMargins="false" />
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/saleLoading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="@dimen/space_6"
+        android:layout_height="@dimen/space_6"
+        android:indeterminateTint="@color/accent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/saleProductScroll"
+        app:layout_constraintEnd_toEndOf="@id/saleProductScroll"
+        app:layout_constraintStart_toStartOf="@id/saleProductScroll"
+        app:layout_constraintTop_toTopOf="@id/saleProductScroll" />
+
+    <LinearLayout
+        android:id="@+id/saleEmptyContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/space_5"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/saleProductScroll"
+        app:layout_constraintEnd_toEndOf="@id/saleProductScroll"
+        app:layout_constraintStart_toStartOf="@id/saleProductScroll"
+        app:layout_constraintTop_toTopOf="@id/saleProductScroll">
+
+        <ImageView
+            android:layout_width="@dimen/empty_icon_size"
+            android:layout_height="@dimen/empty_icon_size"
+            android:contentDescription="@string/sale_no_products"
+            android:src="@drawable/ic_box_seam"
+            android:tint="@color/muted" />
+
+        <TextView
+            android:id="@+id/tvSaleEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_2"
+            android:gravity="center"
+            android:text="@string/sale_no_products"
+            android:textColor="@color/muted_on_soft"
+            android:textSize="@dimen/body_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/saleBottomBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sale_bottom_bar_background"
+        android:elevation="@dimen/card_elevation"
+        android:orientation="vertical"
+        android:padding="@dimen/space_3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewTicket"
+            style="@style/Widget.Incheky.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/touch_target_min"
+            android:contentDescription="@string/sale_ticket_summary"
+            android:enabled="false"
+            android:text="@string/sale_view_ticket"
+            android:textSize="@dimen/body_text_size"
+            app:icon="@drawable/ic_receipt"
+            app:iconGravity="textStart"
+            app:iconTint="@color/white" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

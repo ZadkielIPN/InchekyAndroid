@@ -143,6 +143,9 @@ public class MainActivity extends AppCompatActivity {
         if (destination.getId() == R.id.profileFragment) {
             return getString(R.string.home_profile);
         }
+        if (destination.getId() == R.id.saleFragment) {
+            return getString(R.string.home_create_ticket);
+        }
         if (destination.getId() == R.id.resourceFragment && arguments != null) {
             ApiResource resource = findResource(
                     arguments.getString("resource"),
@@ -231,6 +234,8 @@ public class MainActivity extends AppCompatActivity {
         int menuId = R.id.menuDashboard;
         if (destination.getId() == R.id.profileFragment) {
             menuId = R.id.menuProfile;
+        } else if (destination.getId() == R.id.saleFragment) {
+            menuId = R.id.menuSales;
         } else if (destination.getId() == R.id.resourceFragment && arguments != null) {
             String key = arguments.getString("resource");
             if ("compras".equals(key)) {

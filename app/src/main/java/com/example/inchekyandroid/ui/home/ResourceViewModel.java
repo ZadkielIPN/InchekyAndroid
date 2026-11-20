@@ -56,6 +56,15 @@ public class ResourceViewModel extends ViewModel {
         repository.list(path, 0, 200, null, callback);
     }
 
+    public void listOptions(
+            String path,
+            int page,
+            int size,
+            ApiRepository.ResultCallback<JsonElement> callback
+    ) {
+        repository.list(path, page, size, null, callback);
+    }
+
     public void create(
             String path,
             JsonElement request,
